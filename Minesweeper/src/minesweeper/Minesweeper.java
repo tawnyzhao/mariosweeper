@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 
 /**
  * Programming 12 Minesweeper Project
- * Lasted edited: 2019-03-05
+ * Lasted edited: 2019-03-14
  * @author Tony Zhao
  * 
  * TODO:
@@ -123,6 +123,22 @@ public class Minesweeper {
                 }
             }
             System.out.println();
+        }
+    }
+
+    private void buildButtons() {
+        buttons = new MinesweeperButton[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                buttons[i][j] = new MinesweeperButton(tileSize);
+                buttons[i][j].setValue(grid[i][j]);
+                buttons[i][j].setCoordinates(i,j);
+                buttons[i][j].addMouseListener(new MouseHandler(this));
+                buttons[i][j].setIcon(TILEIMG);
+                buttons[i][j].setRolloverIcon(ACTIVEIMG);
+                buttons[i][j].setBorder(BorderFactory.createEmptyBorder());
+                gridPanel.add(buttons[i][j]);
+            }
         }
     }
     
@@ -246,6 +262,7 @@ public class Minesweeper {
         this.cols = cols;
         this.NUM_MINES = numMines;
         time = 0;
+        isPlaying = false;
         mainPanel.remove(gridPanel);
         frame.remove(mainPanel);
  
@@ -255,20 +272,9 @@ public class Minesweeper {
         buildGrid();
         
         gridPanel = new JPanel();
-        gridPanel.setLayout(new GridLayout(rows,cols,0,0));     
-        
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                buttons[i][j] = new MinesweeperButton(tileSize);
-                buttons[i][j].setValue(grid[i][j]);
-                buttons[i][j].setCoordinates(i,j);
-                buttons[i][j].addMouseListener(new MouseHandler(this));
-                buttons[i][j].setIcon(TILEIMG);
-                buttons[i][j].setRolloverIcon(ACTIVEIMG);
-                buttons[i][j].setBorder(BorderFactory.createEmptyBorder());
-                gridPanel.add(buttons[i][j]);
-            }
-
+        gridPanel.setLayout(new GridLayout(rows,cols,0,0)); 
+            
+        buildButtons();
         mainPanel.add(gridPanel, BorderLayout.CENTER);
         frame.add(mainPanel);
         frame.pack();
@@ -276,8 +282,9 @@ public class Minesweeper {
         mainPanel.add(settingPanel, BorderLayout.SOUTH);
         frame.setLocationRelativeTo(null); // Starts Frame in Center
 
-        }
+        
     }
+
     
     public Minesweeper(int rows, int cols, int NUM_MINES){
         // Setting constants
@@ -304,25 +311,12 @@ public class Minesweeper {
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0));
         settingPanel = new JPanel();
-        settingPanel.   setLayout(new FlowLayout());
+        settingPanel.setLayout(new FlowLayout());
         mainPanel.add(infoPanel, BorderLayout.NORTH);
         mainPanel.add(gridPanel, BorderLayout.CENTER);
         mainPanel.add(settingPanel, BorderLayout.SOUTH);
 
-        // Generates buttons
-        buttons = new MinesweeperButton[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                buttons[i][j] = new MinesweeperButton(tileSize);
-                buttons[i][j].setValue(grid[i][j]);
-                buttons[i][j].setCoordinates(i,j);
-                buttons[i][j].addMouseListener(new MouseHandler(this));
-                buttons[i][j].setIcon(TILEIMG);
-                buttons[i][j].setRolloverIcon(ACTIVEIMG);   
-                buttons[i][j].setBorder(BorderFactory.createEmptyBorder());
-                gridPanel.add(buttons[i][j]);
-            }
-        }
+        buildButtons();
 
         timerLabel = new JLabel();
         minesLabel = new JLabel();

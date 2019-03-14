@@ -7,7 +7,6 @@ package minesweeper;
 
 import java.awt.Color;
 import java.awt.event.*;
-import java.awt.*;
 import javax.swing.*;
 
 
