@@ -53,6 +53,7 @@ public class MouseHandler extends MouseAdapter{
     public void mouseReleased(MouseEvent me) {
         if (me.getSource() instanceof MinesweeperButton) {
             MinesweeperButton button = (MinesweeperButton) (me.getSource());
+            ms.isPlaying = true;
             if (!button.isExposed()){
                 if (me.isMetaDown()) {
                     button.flag();

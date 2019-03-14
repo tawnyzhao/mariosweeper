@@ -128,11 +128,11 @@ public class Minesweeper {
     
     // Function to end game after hitting a mine
     void endGame(){
+        isPlaying = false;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (buttons[i][j].getValue() == -1) {
-                    buttons[i][j].setIcon(MINEIMG);
-                }
+                    buttons[i][j].setIcon(MINEIMG);                }
                 buttons[i][j].expose();
             }
         }
@@ -141,6 +141,7 @@ public class Minesweeper {
     // Checks if only mines are unexposed and flags remaining mines
     void winGame(){
         if (totalTiles - tilesExposed == NUM_MINES) {
+            isPlaying = false;
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
                     if (!buttons[i][j].isExposed()) {
@@ -244,6 +245,7 @@ public class Minesweeper {
         this.rows = rows;
         this.cols = cols;
         this.NUM_MINES = numMines;
+        time = 0;
         mainPanel.remove(gridPanel);
         frame.remove(mainPanel);
  
@@ -251,7 +253,6 @@ public class Minesweeper {
         tilesExposed = 0;
         buttons = new MinesweeperButton[rows][cols];
         buildGrid();
-        printGrid();
         
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0));     
@@ -299,7 +300,7 @@ public class Minesweeper {
         mainPanel.setLayout(new BorderLayout());
 
         infoPanel = new JPanel();
-        infoPanel.setLayout(new GridLayout(1,3));
+        infoPanel.setLayout(new FlowLayout());
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0));
         settingPanel = new JPanel();
@@ -341,7 +342,8 @@ public class Minesweeper {
         });
 
         timer.start();
-        
+        timerLabel.setText(Integer.toString(time));
+
         menuButtons = new MenuButton[3];
         menuButtons[0] = new MenuButton("Beginner",80 ,25);
         menuButtons[1] = new MenuButton("Intermediate", 91, 25);
@@ -351,6 +353,7 @@ public class Minesweeper {
         restartButton.setText(null);
         restartButton.setIcon(RESTARTIMG);
         restartButton.addMouseListener(new MouseHandler(this));
+
         infoPanel.add(timerLabel);
         infoPanel.add(restartButton);
         infoPanel.add(minesLabel);
