@@ -153,7 +153,7 @@ public class Minesweeper {
         }
     }
 
-    // Clears tiles around a 0
+    // Clears tiles around a 0 and checks to see if game is won
     void exposeEmpty(int[] coord) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -176,7 +176,7 @@ public class Minesweeper {
         int x = coord[0];
         int y = coord[1];
         int flagCount = 0;
-        for (int i = -1; i <= 1; i++) {
+        for (int i = -1; i <= 1; i++) { 
             for (int j = -1; j <= 1; j++) {
                 if (x+i >= 0 && x+i < rows && y+j >= 0 && y+j < cols) {
                     if (buttons[x+i][y+j].isFlagged()) {
@@ -185,16 +185,16 @@ public class Minesweeper {
                 }
             }
         }
-        if (flagCount == buttons[x][y].getValue()) {
+        if (flagCount == buttons[x][y].getValue()) { // Checks if the correct amount of flags are around the tile before clearing
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     if (x+i >= 0 && x+i < rows && y+j >= 0 && y+j < cols) {
-                        if (!buttons[x+i][y+j].isExposed()) {
-                            if (!buttons[x+i][y+j].isFlagged() && buttons[x+i][y+j].getValue() == -1) {
+                        if (!buttons[x+i][y+j].isExposed()) { 
+                            if (!buttons[x+i][y+j].isFlagged() && buttons[x+i][y+j].getValue() == -1) { // Ends game if incorrectly flagged
                                 endGame();
                                 buttons[x+i][y+j].setBackground(Color.RED);
                             } 
-                            if (buttons[x+i][y+j].getValue() == 0) {
+                            if (buttons[x+i][y+j].getValue() == 0) { 
                                 exposeEmpty(buttons[x+i][y+j].getCoordinates());
                             } if (buttons[x+i][y+j].getValue() > 0) {
                                 buttons[x+i][y+j].expose();
@@ -303,7 +303,7 @@ public class Minesweeper {
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0));
         settingPanel = new JPanel();
-        settingPanel.setLayout(new FlowLayout());
+        settingPanel.   setLayout(new FlowLayout());
         mainPanel.add(infoPanel, BorderLayout.NORTH);
         mainPanel.add(gridPanel, BorderLayout.CENTER);
         mainPanel.add(settingPanel, BorderLayout.SOUTH);
