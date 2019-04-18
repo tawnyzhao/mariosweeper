@@ -170,7 +170,8 @@ public class Minesweeper {
         }
     }
 
-    // Clears tiles around a 0 and checks to see if game is won
+    /**  Clears tiles around a 0 and checks to see if game is won
+    */
     void exposeEmpty(int[] coord) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
