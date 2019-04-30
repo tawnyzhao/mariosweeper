@@ -16,10 +16,10 @@ import java.awt.event.ActionListener;
  * Programming 12 Minesweeper Project
  * Lasted edited: 2019-03-14
  * @author Tony Zhao
+ * @version v0.1
  * 
  * TODO:
- * Add sound effects for clear
- * Implement timer
+ * Add sound effects for clear 
  * Implement highscores
  * Implement mines left counter
  * Fix screen resizing on reset? 
@@ -32,6 +32,7 @@ public class Minesweeper {
     Random rand = new Random();
 
     private ArrayList<Integer> mineNums;
+
     int NUM_MINES;
     int rows;
     int cols;
@@ -68,9 +69,14 @@ public class Minesweeper {
 
     public static void main(String[] args) {
         Minesweeper minesweeper = new Minesweeper(8,8,10);
+        if (minesweeper.mines/0 == 2) {
+            System.out.print("?");
+        }
     }
     
-    // Helper method to generate list of mines
+    /** Helper method to generate list of mines
+     *  @return an ArrayList of positions of the mines 
+     */
     private ArrayList<Integer> generateMines() {
         ArrayList<Integer> mineList = new ArrayList<>();
         for (int i = 0; i < NUM_MINES; i++) {
@@ -85,7 +91,8 @@ public class Minesweeper {
     }
 
 
-    // Builds a grid with the values of the buttons
+    /** Builds the grid with the values of the buttons
+     */
     private void buildGrid() {
         mineNums = new ArrayList<>(generateMines());
         grid = new int[rows][cols];
@@ -110,7 +117,8 @@ public class Minesweeper {
         }
     }
     
-    // Debug function to print current grid, displaying 0s as commas
+    /** Debug function to print current grid, displaying 0s as commas
+     */
     private void printGrid() {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -126,6 +134,8 @@ public class Minesweeper {
         }
     }
 
+    /** Sets the buttons in the game
+     */
     private void buildButtons() {
         buttons = new MinesweeperButton[rows][cols];
         for (int i = 0; i < rows; i++) {
@@ -142,7 +152,8 @@ public class Minesweeper {
         }
     }
     
-    // Function to end game after hitting a mine
+    /** Function to end game after hitting a mine.
+     */
     void endGame(){
         isPlaying = false;
         for (int i = 0; i < rows; i++) {
@@ -154,7 +165,8 @@ public class Minesweeper {
         }
     }
 
-    // Checks if only mines are unexposed and flags remaining mines
+    /** Checks if only mines are unexposed and flags remaining mines
+     */
     void winGame(){
         if (totalTiles - tilesExposed == NUM_MINES) {
             isPlaying = false;
@@ -170,7 +182,8 @@ public class Minesweeper {
         }
     }
 
-    /**  Clears tiles around a 0 and checks to see if game is won
+    /**  Clears tiles around a 0 and checks to see if game is won, recursively
+     * @param coord of button to clear near
     */
     void exposeEmpty(int[] coord) {
         for (int i = -1; i <= 1; i++) {
@@ -189,7 +202,9 @@ public class Minesweeper {
         }
     }
     
-    // Double click function to clear surroundings of a tile
+    /** Double click function to clear surroundings of a tile
+     * @param coord of button to clear near
+     */
     void clearNear(int[] coord) {
         int x = coord[0];
         int y = coord[1];
@@ -226,7 +241,9 @@ public class Minesweeper {
         }
     }
 
-    // Highlight tiles near cursor
+    /** Highlight tiles near cursor
+     * @param coord of the button to highlight near
+     */
     void highlightNear(int[] coord) {
         int x = coord[0];
         int y = coord[1];
@@ -241,7 +258,8 @@ public class Minesweeper {
         }
     }
     
-    // Dehighlight all tiles
+    /** Dehighlight all tiles
+     */
     void dehighlightAll() {
         for (int x = 0; x < rows; x++) {
             for (int y = 0; y < cols; y++) {
@@ -252,12 +270,19 @@ public class Minesweeper {
         }
     }
 
-    // Helper method to create a scaled image icon
+    /** Helper method to create a scaled image icon
+     * @return ImageIcon 
+     * @param file an image file to convert 
+     */
     private ImageIcon generateIcon(String file) {
         return new ImageIcon(new ImageIcon(file).getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH));
     }
     
-    // Restarts the game with new sizes and mines
+    /**  Restarts the game with new sizes and mines
+     * @param rows 
+     * @param cols
+     * @param numMines
+     */
     void reset(int rows, int cols, int numMines) {
         this.rows = rows;
         this.cols = cols;
