@@ -1,20 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package minesweeper;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
  * Programming 12 Minesweeper Project
- * Lasted edited: 2019-03-14
+ * Last edited: 2019-05-21
  * @author Tony Zhao
  * @version v0.1
  * 
@@ -26,6 +20,7 @@ import java.awt.event.ActionListener;
  * 
  * Extra Features:
  * Double clicking 
+ * Custom cursor
  */
 
 public class Minesweeper {
@@ -94,7 +89,7 @@ public class Minesweeper {
         ArrayList<Integer> mineList = new ArrayList<>();
         for (int i = 0; i < NUM_MINES; i++) {
             int newMine = rand.nextInt(rows*cols);
-            if (mineList.contains(newMine) && notPermissible.contains(newMine)) { // Only add mines to list if it isn't at that position already
+            if (mineList.contains(newMine) || notPermissible.contains(newMine)) { // Only add mines to list if it isn't at that position already
                 i--;
             } else {
                 mineList.add(newMine);
@@ -132,15 +127,18 @@ public class Minesweeper {
     /** Builds the grid with the value of the button, ensuring that there is no mines generated adjacent to the give coordinate
      * @param coord of the first click
      */
-    private void buildGrid(int[] coord) {
-        ArrayList notPermissible = new ArrayList();
+    void buildGrid(int[] coord) {
+
+        ArrayList<Integer> notPermissible = new ArrayList<>();
         for (int i = -1; i <= 1; i++) {
-            for (int j = -1; i <= 1; j++) {
-                notPermissible.add((coord[0]+i)*rows + coord[1]+j);
+            for (int j = -1; j <= 1; j++) {
+                if (coord[0]+i >= 0 && coord[0]+i < rows && coord[1]+j >= 0 && coord[1]+j < cols)
+                    notPermissible.add((coord[0]+i)*cols + coord[1]+j);
             }
         }
 
-        mineNums = new ArrayList<>(generateMines());
+        mineNums = new ArrayList<>(generateMines(notPermissible));
+
         grid = new int[rows][cols];
         for (int mineNum : mineNums) { // Adds mines
             grid[mineNum/cols][mineNum%cols] = -1;
@@ -165,7 +163,7 @@ public class Minesweeper {
     
     /** Debug function to print current grid, displaying 0s as commas
      */
-    private void printGrid() {
+    void printGrid() {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] == -1) {
@@ -187,7 +185,6 @@ public class Minesweeper {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 buttons[i][j] = new MinesweeperButton(tileSize);
-                buttons[i][j].setValue(grid[i][j]);
                 buttons[i][j].setCoordinates(i,j);
                 buttons[i][j].addMouseListener(new MouseHandler(this));
                 buttons[i][j].setIcon(TILEIMG);
@@ -198,6 +195,17 @@ public class Minesweeper {
         }
     }
     
+    /** Implements mines to buttons
+     * 
+     */
+    void setButtonValues() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                buttons[i][j].setValue(grid[i][j]);
+            }
+        }
+    }
+
     /** Function to end game after hitting a mine.
      */
     void endGame(){
@@ -334,6 +342,7 @@ public class Minesweeper {
         this.cols = cols;
         this.NUM_MINES = numMines;
         time = 0;
+        timerLabel.setText(Integer.toString(time));
         isPlaying = false;
         totalTiles = rows * cols;
         tilesExposed = 0;
@@ -341,7 +350,6 @@ public class Minesweeper {
         mainPanel.remove(gridPanel);
 
         buttons = new MinesweeperButton[rows][cols];
-        buildGrid();
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0)); 
             
@@ -364,6 +372,7 @@ public class Minesweeper {
         NUM_MINES = 10;
         totalTiles = rows * cols;
         tilesExposed = 0;
+        isPlaying = false;
 
         TILEIMG = generateIcon("images/tile.png");
         FLAGIMG = generateIcon("images/flag.png");
@@ -374,12 +383,8 @@ public class Minesweeper {
         CURSORIMG = generateIcon("images/cursor.png");
         cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG.getImage(),new Point(0,0), "Cursor");
 
-
-        buildGrid();
-
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-
         infoPanel = new JPanel();
         infoPanel.setLayout(new FlowLayout());
         gridPanel = new JPanel();
@@ -396,9 +401,7 @@ public class Minesweeper {
         minesLabel = new JLabel();
         time = 0;
         mines = NUM_MINES;
-
         minesLabel.setText(Integer.toString(mines));
-
         timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -408,20 +411,16 @@ public class Minesweeper {
                 }
             }
         });
-
         timer.start();
         timerLabel.setText(Integer.toString(time));
-
         menuButtons = new MenuButton[3];
         menuButtons[0] = new MenuButton("Beginner",80 ,25);
         menuButtons[1] = new MenuButton("Intermediate", 91, 25);
         menuButtons[2] = new MenuButton("Expert",68, 25);
-        
         restartButton = new MenuButton("Restart",tileSize+2,tileSize+2);
         restartButton.setText(null);
         restartButton.setIcon(RESTARTIMG);
         restartButton.addMouseListener(new MouseHandler(this));
-
         infoPanel.add(timerLabel);
         infoPanel.add(restartButton);
         infoPanel.add(minesLabel);

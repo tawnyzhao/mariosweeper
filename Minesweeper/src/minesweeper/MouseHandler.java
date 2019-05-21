@@ -23,6 +23,7 @@ public class MouseHandler extends MouseAdapter{
         ms = minesweeper;
         isLeftPressed = false;
         isRightPressed = false;
+        
     }
 
     @Override
@@ -52,7 +53,14 @@ public class MouseHandler extends MouseAdapter{
     public void mouseReleased(MouseEvent me) {
         if (me.getSource() instanceof MinesweeperButton) {
             MinesweeperButton button = (MinesweeperButton) (me.getSource());
-            ms.isPlaying = true;
+            System.out.println(ms.isPlaying);
+            if (!ms.isPlaying) {
+                ms.isPlaying = true;
+                System.out.println(ms.isPlaying);
+                ms.buildGrid(button.getCoordinates());
+                ms.printGrid();
+                ms.setButtonValues();   
+            }
             if (!button.isExposed()){
                 if (me.isMetaDown()) {
                     button.flag();
