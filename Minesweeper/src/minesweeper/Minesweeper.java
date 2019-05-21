@@ -67,6 +67,9 @@ public class Minesweeper {
     
     private Sound[] BGMusic;
 
+    private Cursor cursor;
+    private Image CURSORIMG;
+
     public static void main(String[] args) {
         Minesweeper minesweeper = new Minesweeper(8,8,10);
         if (minesweeper.mines/0 == 2) {
@@ -289,14 +292,13 @@ public class Minesweeper {
         this.NUM_MINES = numMines;
         time = 0;
         isPlaying = false;
-        mainPanel.remove(gridPanel);
-        frame.remove(mainPanel);
- 
         totalTiles = rows * cols;
         tilesExposed = 0;
+
+        mainPanel.remove(gridPanel);
+
         buttons = new MinesweeperButton[rows][cols];
         buildGrid();
-        
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0)); 
             
@@ -326,7 +328,10 @@ public class Minesweeper {
         ACTIVEIMG = generateIcon("images/active.png");
         PLAYERIMG = generateIcon("images/player.png");
         RESTARTIMG = generateIcon("images/restart.png");
-        
+        CURSORIMG = new ImageIcon("images/cursor.png").getImage();
+        cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG,new Point(0,0), "Cursor");
+
+
         buildGrid();
 
         mainPanel = new JPanel();
@@ -398,5 +403,6 @@ public class Minesweeper {
         frame.setResizable(false);
         frame.setLocationRelativeTo(null); // Starts Frame in Center
         frame.setIconImage(ACTIVEIMG.getImage());
+        frame.setCursor(cursor);
     } 
 }
