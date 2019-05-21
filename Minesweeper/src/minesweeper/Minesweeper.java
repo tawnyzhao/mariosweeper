@@ -68,13 +68,10 @@ public class Minesweeper {
     private Sound[] BGMusic;
 
     private Cursor cursor;
-    private Image CURSORIMG;
+    private ImageIcon CURSORIMG;
 
     public static void main(String[] args) {
-        Minesweeper minesweeper = new Minesweeper(8,8,10);
-        if (minesweeper.mines/0 == 2) {
-            System.out.print("?");
-        }
+        Minesweeper minesweeper = new Minesweeper();
     }
     
     /** Helper method to generate list of mines
@@ -93,10 +90,56 @@ public class Minesweeper {
         return mineList;
     }
 
+    private ArrayList<Integer> generateMines(ArrayList notPermissible) {
+        ArrayList<Integer> mineList = new ArrayList<>();
+        for (int i = 0; i < NUM_MINES; i++) {
+            int newMine = rand.nextInt(rows*cols);
+            if (mineList.contains(newMine) && notPermissible.contains(newMine)) { // Only add mines to list if it isn't at that position already
+                i--;
+            } else {
+                mineList.add(newMine);
+            }
+        }
+        return mineList;
+    }
 
     /** Builds the grid with the values of the buttons
      */
     private void buildGrid() {
+        mineNums = new ArrayList<>(generateMines());
+        grid = new int[rows][cols];
+        for (int mineNum : mineNums) { // Adds mines
+            grid[mineNum/cols][mineNum%cols] = -1;
+        }
+        // Iterate through integer array to generate the numbers around the mines
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                    if (grid[i][j] == -1) { // If loops through a mine, increment the surrounding tiles
+                        for (int a = -1; a <= 1; a++) {
+                            for (int b = -1; b <= 1; b++) {
+                                if (i + a >= 0 && i + a  < grid.length  && j + b >= 0 && j + b < grid[i].length) { // Checks if tiles is not out of bounds
+                                    if (grid[i+a][j+b] != -1) {
+                                        grid[i+a][j+b]++;    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /** Builds the grid with the value of the button, ensuring that there is no mines generated adjacent to the give coordinate
+     * @param coord of the first click
+     */
+    private void buildGrid(int[] coord) {
+        ArrayList notPermissible = new ArrayList();
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; i <= 1; j++) {
+                notPermissible.add((coord[0]+i)*rows + coord[1]+j);
+            }
+        }
+
         mineNums = new ArrayList<>(generateMines());
         grid = new int[rows][cols];
         for (int mineNum : mineNums) { // Adds mines
@@ -314,11 +357,11 @@ public class Minesweeper {
     }
 
     
-    public Minesweeper(int rows, int cols, int NUM_MINES){
+    public Minesweeper(){
         // Setting constants
-        this.rows = rows;
-        this.cols = cols;
-        this.NUM_MINES = NUM_MINES;
+        rows = 8;
+        cols = 8;
+        NUM_MINES = 10;
         totalTiles = rows * cols;
         tilesExposed = 0;
 
@@ -328,8 +371,8 @@ public class Minesweeper {
         ACTIVEIMG = generateIcon("images/active.png");
         PLAYERIMG = generateIcon("images/player.png");
         RESTARTIMG = generateIcon("images/restart.png");
-        CURSORIMG = new ImageIcon("images/cursor.png").getImage();
-        cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG,new Point(0,0), "Cursor");
+        CURSORIMG = generateIcon("images/cursor.png");
+        cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG.getImage(),new Point(0,0), "Cursor");
 
 
         buildGrid();
