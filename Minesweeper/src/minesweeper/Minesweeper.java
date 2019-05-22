@@ -33,6 +33,7 @@ public class Minesweeper {
     int cols;
     int totalTiles;
     int tilesExposed;
+    String mode;
     private int tileSize = 34;
 
     private int[][] grid;
@@ -65,11 +66,15 @@ public class Minesweeper {
     private Cursor cursor;
     private ImageIcon CURSORIMG;
 
-    private HighscoreHandler scorehandler;
+    private HighscoreHandler scoreHandler;
     public static void main(String[] args) {
         Minesweeper minesweeper = new Minesweeper();
     }
     
+    void setMode(String mode) {
+        this.mode = mode;
+    }
+
     /** Helper method to generate list of mines
      *  @return an ArrayList of positions of the mines 
      */
@@ -224,6 +229,8 @@ public class Minesweeper {
      */
     void winGame(){
         if (totalTiles - tilesExposed == NUM_MINES) {
+            scoreHandler.addHighscore(time, mode);
+            System.out.println(scoreHandler.getHighscores(mode));
             isPlaying = false;
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
@@ -389,8 +396,8 @@ public class Minesweeper {
         timerLabel = new JLabel();
         minesLabel = new JLabel();
         time = 0;
-        mines = NUM_MINES;
-        minesLabel.setText(Integer.toString(mines));
+        
+        minesLabel.setText(Integer.toString(totalTiles - tilesExposed));
         timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -437,6 +444,7 @@ public class Minesweeper {
         totalTiles = rows * cols;
         tilesExposed = 0;
         isPlaying = false;
+        setMode("Beginner");
 
         initializeImages();
         initializeFrame();
@@ -447,5 +455,6 @@ public class Minesweeper {
 
         BGMusic[0].playMusic();
         
+        scoreHandler = new HighscoreHandler("highscores.txt");
     } 
 }
