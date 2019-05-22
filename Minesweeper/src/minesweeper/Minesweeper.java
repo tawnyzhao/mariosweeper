@@ -65,6 +65,7 @@ public class Minesweeper {
     private Cursor cursor;
     private ImageIcon CURSORIMG;
 
+    private HighscoreHandler scorehandler;
     public static void main(String[] args) {
         Minesweeper minesweeper = new Minesweeper();
     }
@@ -98,7 +99,7 @@ public class Minesweeper {
         return mineList;
     }
 
-    /** Builds the grid with the values of the buttons
+    /** Builds the grid with the values of the buttons randomly
      */
     private void buildGrid() {
         mineNums = new ArrayList<>(generateMines());
@@ -352,28 +353,13 @@ public class Minesweeper {
         buttons = new MinesweeperButton[rows][cols];
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0)); 
-            
         buildButtons();
         mainPanel.add(gridPanel, BorderLayout.CENTER);
-        frame.add(mainPanel);
         frame.pack();
-
-        mainPanel.add(settingPanel, BorderLayout.SOUTH);
         frame.setLocationRelativeTo(null); // Starts Frame in Center
-
-        
     }
 
-    
-    public Minesweeper(){
-        // Setting constants
-        rows = 8;
-        cols = 8;
-        NUM_MINES = 10;
-        totalTiles = rows * cols;
-        tilesExposed = 0;
-        isPlaying = false;
-
+    void initializeImages() {
         TILEIMG = generateIcon("images/tile.png");
         FLAGIMG = generateIcon("images/flag.png");
         MINEIMG = generateIcon("images/mine.png");
@@ -382,7 +368,10 @@ public class Minesweeper {
         RESTARTIMG = generateIcon("images/restart.png");
         CURSORIMG = generateIcon("images/cursor.png");
         cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG.getImage(),new Point(0,0), "Cursor");
+    }
 
+    void initializeFrame() {
+        
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         infoPanel = new JPanel();
@@ -425,18 +414,10 @@ public class Minesweeper {
         infoPanel.add(restartButton);
         infoPanel.add(minesLabel);
 
-
         for (MenuButton menuButton : menuButtons) {
             settingPanel.add(menuButton);
             menuButton.addMouseListener(new MouseHandler(this));
         }
-        
-        BGMusic = new Sound[] {
-             new Sound("sounds/athletic.wav"),
-            };
-
-        BGMusic[0].playMusic();
-        
         frame = new JFrame("Mariosweeper");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(mainPanel);
@@ -446,5 +427,25 @@ public class Minesweeper {
         frame.setLocationRelativeTo(null); // Starts Frame in Center
         frame.setIconImage(ACTIVEIMG.getImage());
         frame.setCursor(cursor);
+    }
+    
+    public Minesweeper(){
+        // Setting constants
+        rows = 8;
+        cols = 8;
+        NUM_MINES = 10;
+        totalTiles = rows * cols;
+        tilesExposed = 0;
+        isPlaying = false;
+
+        initializeImages();
+        initializeFrame();
+        
+        BGMusic = new Sound[] {
+             new Sound("sounds/athletic.wav"),
+            };
+
+        BGMusic[0].playMusic();
+        
     } 
 }
