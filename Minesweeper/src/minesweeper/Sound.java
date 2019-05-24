@@ -1,12 +1,20 @@
 package minesweeper;
 import javax.sound.sampled.*;
+import static javax.sound.sampled.Clip.LOOP_CONTINUOUSLY;
+
 import java.io.*;
 
+/** Sound class: creates sound objects which can be played and stopped */
 public class Sound {
     private File soundFile;
     private AudioInputStream audioIn;
     private Clip clip;
 
+    /**
+     * Constructor for sound
+     * 
+     * @param filename the file dir of the sound to be played
+     */
     public Sound(String filename) {
         soundFile = new File(filename);
 
@@ -15,26 +23,33 @@ public class Sound {
             clip = AudioSystem.getClip();
             clip.open(audioIn);
         } catch (UnsupportedAudioFileException e) {
-            ;
+            e.printStackTrace();
         } catch (IOException e) {
-            ;
+            e.printStackTrace();
         } catch (LineUnavailableException e) {
-            ;
+            e.printStackTrace();
         }
-    } 
+    }
 
     public Sound() {
         this("sounds/pop.wav");
     }
 
+    /**
+     * Plays background music (loops infinitely)
+     */
     void playMusic() {
-        clip.loop(clip.LOOP_CONTINUOUSLY);
+        clip.loop(LOOP_CONTINUOUSLY);
     }
 
+    /** Plays a sound effect once 
+     */
     void playEffect() {
         clip.start();
     }
 
+    /** Stops playing a sound
+     */
     void stop() {
         clip.stop();
     }

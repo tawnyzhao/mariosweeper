@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  * Programming 12 Minesweeper Project
  * Last edited: 2019-05-21
  * @author Tony Zhao
- * @version v0.1
+ * @version v0.1.
  * 
  * TODO:
  * Add sound effects for clear 
@@ -42,11 +42,13 @@ public class Minesweeper {
     private JPanel infoPanel;
     private JPanel gridPanel;
     private JPanel settingPanel;
-    
+    private JPanel scorePanel;
+
     private MenuButton[] menuButtons;
     private MenuButton restartButton;
     private MinesweeperButton[][] buttons;
     private JLabel timerLabel;
+    private JLabel[] scoreLabels;
     private Timer timer;
     private int time;
     JLabel minesLabel;
@@ -61,12 +63,17 @@ public class Minesweeper {
     private ImageIcon PLAYERIMG;
     private ImageIcon RESTARTIMG;
     
-    private Sound[] BGMusic;
+    private Sound[] sounds;
 
     private Cursor cursor;
     private ImageIcon CURSORIMG;
 
     private HighscoreHandler scoreHandler;
+
+    static String beginner = "Beginner";
+    static String intermediate = "Intermediate";
+    static String expert = "Expert";
+
     public static void main(String[] args) {
         Minesweeper minesweeper = new Minesweeper();
     }
@@ -75,6 +82,9 @@ public class Minesweeper {
         this.mode = mode;
     }
 
+    String getMode() {
+        return mode;
+    }
     /** Helper method to generate list of mines
      *  @return an ArrayList of positions of the mines 
      */
@@ -230,7 +240,7 @@ public class Minesweeper {
     void winGame(){
         if (totalTiles - tilesExposed == NUM_MINES) {
             scoreHandler.addHighscore(time, mode);
-            System.out.println(scoreHandler.getHighscores(mode));
+            System.out.println(scoreHandler.getHighscores(getMode()));
             isPlaying = false;
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
@@ -387,10 +397,15 @@ public class Minesweeper {
         gridPanel.setLayout(new GridLayout(rows,cols,0,0));
         settingPanel = new JPanel();
         settingPanel.setLayout(new FlowLayout());
+        scorePanel = new JPanel();
+        scorePanel.setLayout(new BoxLayout(scorePanel,BoxLayout.PAGE_AXIS  ));
+        
+        
         mainPanel.add(infoPanel, BorderLayout.NORTH);
         mainPanel.add(gridPanel, BorderLayout.CENTER);
         mainPanel.add(settingPanel, BorderLayout.SOUTH);
-
+        mainPanel.add(scorePanel, BorderLayout.EAST); //TODO: renable later
+        
         buildButtons();
 
         timerLabel = new JLabel();
@@ -407,8 +422,10 @@ public class Minesweeper {
                 }
             }
         });
+
         timer.start();
         timerLabel.setText(Integer.toString(time));
+
         menuButtons = new MenuButton[3];
         menuButtons[0] = new MenuButton("Beginner",80 ,25);
         menuButtons[1] = new MenuButton("Intermediate", 91, 25);
@@ -425,6 +442,14 @@ public class Minesweeper {
             settingPanel.add(menuButton);
             menuButton.addMouseListener(new MouseHandler(this));
         }
+
+        ArrayList<String> highscores = scoreHandler.getHighscores(getMode());
+        scoreLabels = new JLabel[highscores.size()];
+        for (int i = 0; i < highscores.size(); i++) {
+            scoreLabels[i] = new JLabel(highscores.get(i));
+            scorePanel.add(scoreLabels[i]);
+        }
+        
         frame = new JFrame("Mariosweeper");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(mainPanel);
@@ -438,23 +463,22 @@ public class Minesweeper {
     
     public Minesweeper(){
         // Setting constants
+        scoreHandler = new HighscoreHandler("highscores.txt");
+
         rows = 8;
         cols = 8;
         NUM_MINES = 10;
         totalTiles = rows * cols;
         tilesExposed = 0;
         isPlaying = false;
-        setMode("Beginner");
+        setMode(beginner);
 
         initializeImages();
         initializeFrame();
         
-        BGMusic = new Sound[] {
+        sounds = new Sound[] {
              new Sound("sounds/athletic.wav"),
             };
-
-        BGMusic[0].playMusic();
-        
-        scoreHandler = new HighscoreHandler("highscores.txt");
+        sounds[0].playMusic();
     } 
 }

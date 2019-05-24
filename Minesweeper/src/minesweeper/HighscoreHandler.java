@@ -10,7 +10,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.*;
 
 public class HighscoreHandler {
     private BufferedReader reader;
@@ -35,7 +34,7 @@ public class HighscoreHandler {
         date = new Date();
         
         try {
-            writer.write(mode + " : " + Integer.toString(time) + " : " + dateFormat.format(date));
+            writer.write(mode + " | " + Integer.toString(time) + " | " + dateFormat.format(date));
             writer.newLine();
             writer.close();
             writer = new BufferedWriter(new FileWriter(fileLocation, true));

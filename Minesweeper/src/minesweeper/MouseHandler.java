@@ -94,13 +94,13 @@ public class MouseHandler extends MouseAdapter{
         } else if (me.getSource() instanceof MenuButton) {
             MenuButton button = (MenuButton) (me.getSource());
             if (button.getType().equals("Beginner")) {
-                ms.setMode("Beginner");
+                ms.setMode(ms.beginner);
                 ms.reset(8,8,10);
             } else if (button.getType().equals("Intermediate")) {
-                ms.setMode("Intermediate");
+                ms.setMode(ms.intermediate);
                 ms.reset(16,16,40);
             } else if (button.getType().equals("Expert")) {
-                ms.setMode("Expert");
+                ms.setMode(ms.expert);
                 ms.reset(16,30,99);
             } else if (button.getType().equals("Restart"))   {
                 ms.reset(ms.rows,ms.cols,ms.NUM_MINES);
