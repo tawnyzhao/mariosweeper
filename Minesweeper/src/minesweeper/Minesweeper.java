@@ -2,6 +2,8 @@ package minesweeper;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.border.BevelBorder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +36,7 @@ public class Minesweeper {
     int totalTiles;
     int tilesExposed;
     String mode;
-    private int tileSize = 34;
+    private int tileSize = 35;
 
     private int[][] grid;
     private JFrame frame;
@@ -225,6 +227,7 @@ public class Minesweeper {
     /** Function to end game after hitting a mine.
      */
     void endGame(){
+        timer.stop();
         isPlaying = false;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -239,6 +242,7 @@ public class Minesweeper {
      */
     void winGame(){
         if (totalTiles - tilesExposed == NUM_MINES) {
+            timer.stop();
             scoreHandler.addHighscore(time, mode);
             System.out.println(scoreHandler.getHighscores(getMode()));
             isPlaying = false;
@@ -364,14 +368,19 @@ public class Minesweeper {
         isPlaying = false;
         totalTiles = rows * cols;
         tilesExposed = 0;
-
+        
         mainPanel.remove(gridPanel);
 
         buttons = new MinesweeperButton[rows][cols];
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0)); 
         buildButtons();
-        mainPanel.add(gridPanel, BorderLayout.CENTER);
+        GridBagConstraints gridPanelConstraints = new GridBagConstraints();
+        gridPanelConstraints.gridx = 0;
+        gridPanelConstraints.gridy = 1;
+        gridPanelConstraints.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(gridPanel, gridPanelConstraints);
+        timer.start();
         frame.pack();
         frame.setLocationRelativeTo(null); // Starts Frame in Center
     }
@@ -390,7 +399,7 @@ public class Minesweeper {
     void initializeFrame() {
         
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setLayout(new GridBagLayout());
         infoPanel = new JPanel();
         infoPanel.setLayout(new FlowLayout());
         gridPanel = new JPanel();
@@ -398,14 +407,31 @@ public class Minesweeper {
         settingPanel = new JPanel();
         settingPanel.setLayout(new FlowLayout());
         scorePanel = new JPanel();
-        scorePanel.setLayout(new BoxLayout(scorePanel,BoxLayout.PAGE_AXIS  ));
+        scorePanel.setLayout(new BoxLayout(scorePanel,BoxLayout.PAGE_AXIS));
         
+        GridBagConstraints infoPanelConstraints = new GridBagConstraints();
+        infoPanelConstraints.gridx = 0;
+        infoPanelConstraints.gridy = 0;
+        infoPanelConstraints.anchor = GridBagConstraints.PAGE_START;
+        GridBagConstraints gridPanelConstraints = new GridBagConstraints();
+        gridPanelConstraints.gridx = 0;
+        gridPanelConstraints.gridy = 1;
+        gridPanelConstraints.anchor = GridBagConstraints.CENTER;
+        GridBagConstraints settingPanelConstraints = new GridBagConstraints();
+        settingPanelConstraints.gridx = 0;
+        settingPanelConstraints.gridy = 2;
+        settingPanelConstraints.anchor = GridBagConstraints.PAGE_END;
+        GridBagConstraints scorePanelConstraints = new GridBagConstraints();
+        scorePanelConstraints.gridx = 1;
+        scorePanelConstraints.gridy = 1;
+        scorePanelConstraints.anchor = GridBagConstraints.LINE_END;
+
+        mainPanel.add(infoPanel, infoPanelConstraints);
+        mainPanel.add(gridPanel, gridPanelConstraints);
+        mainPanel.add(settingPanel, settingPanelConstraints);
+        mainPanel.add(scorePanel, scorePanelConstraints); //TODO: renable later
         
-        mainPanel.add(infoPanel, BorderLayout.NORTH);
-        mainPanel.add(gridPanel, BorderLayout.CENTER);
-        mainPanel.add(settingPanel, BorderLayout.SOUTH);
-        mainPanel.add(scorePanel, BorderLayout.EAST); //TODO: renable later
-        
+
         buildButtons();
 
         timerLabel = new JLabel();
@@ -443,11 +469,14 @@ public class Minesweeper {
             menuButton.addMouseListener(new MouseHandler(this));
         }
 
+        scorePanel.add(new JLabel("Hall of Fame"));
         ArrayList<String> highscores = scoreHandler.getHighscores(getMode());
         scoreLabels = new JLabel[highscores.size()];
         for (int i = 0; i < highscores.size(); i++) {
             scoreLabels[i] = new JLabel(highscores.get(i));
+            scorePanel.add(Box.createHorizontalGlue());
             scorePanel.add(scoreLabels[i]);
+            scorePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
         
         frame = new JFrame("Mariosweeper");

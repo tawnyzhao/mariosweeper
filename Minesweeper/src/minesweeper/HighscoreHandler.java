@@ -22,12 +22,12 @@ public class HighscoreHandler {
         this.fileLocation = fileLocation;
         try {
             reader = new BufferedReader(new FileReader(fileLocation));
-            writer = new BufferedWriter(new FileWriter(fileLocation, true)); //second argument sets appends lines
+            writer = new BufferedWriter(new FileWriter(fileLocation, true)); //second argument appends lines
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd");
     }
 
     void addHighscore(int time, String mode) {
