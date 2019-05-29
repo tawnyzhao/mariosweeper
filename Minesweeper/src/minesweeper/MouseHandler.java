@@ -30,7 +30,7 @@ public class MouseHandler extends MouseAdapter{
     public void mouseClicked(MouseEvent me) {
         if (me.getSource() instanceof MinesweeperButton) {
             MinesweeperButton button = (MinesweeperButton) (me.getSource());
-            ms.dehighlightAll();
+            //ms.dehighlightAll();
         }
     }
         
@@ -62,8 +62,11 @@ public class MouseHandler extends MouseAdapter{
                 if (me.isMetaDown()) {
                     button.flag();
                     if (button.isFlagged()) {
+                        ms.tilesFlagged++;
+                        ms.minesLabel.setText(Integer.toString(ms.NUM_MINES - ms.tilesFlagged));
                         button.setIcon(ms.FLAGIMG);
                     } else {
+                        ms.tilesFlagged--;
                         button.setIcon(ms.TILEIMG);
                     }
                 }

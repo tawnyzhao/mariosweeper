@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.*;
 
 public class HighscoreHandler {
     private BufferedReader reader;
@@ -62,6 +63,26 @@ public class HighscoreHandler {
             e.printStackTrace();
         }
 
+        return result;
+    }
+
+    ArrayList<String> getHighscores() {
+        ArrayList<String> result = new ArrayList<>();
+        String currentLine;
+        try {
+            while ((currentLine = reader.readLine()) != null) { // Reads until end of file
+                ;
+            }
+            int beginnerMin = Integer.MAX_VALUE;
+            int intermediateMin = Integer.MAX_VALUE;
+            int expertMin = Integer.MAX_VALUE;
+            
+            reader.close();
+            reader = new BufferedReader(new FileReader(fileLocation));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return result;
     }
     /*

@@ -11,7 +11,7 @@ public class Sound {
     private Clip clip;
 
     /**
-     * Constructor for sound
+     * Creates a sound object which can be played and looped
      * 
      * @param filename the file dir of the sound to be played
      */

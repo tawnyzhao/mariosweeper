@@ -2,7 +2,6 @@ package minesweeper;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.border.BevelBorder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -35,6 +34,7 @@ public class Minesweeper {
     int cols;
     int totalTiles;
     int tilesExposed;
+    int tilesFlagged;
     String mode;
     private int tileSize = 35;
 
@@ -207,7 +207,7 @@ public class Minesweeper {
                 buttons[i][j].addMouseListener(new MouseHandler(this));
                 buttons[i][j].setIcon(TILEIMG);
                 buttons[i][j].setRolloverIcon(ACTIVEIMG);
-                buttons[i][j].setBorder(BorderFactory.createEmptyBorder());
+                buttons[i][j].setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
                 gridPanel.add(buttons[i][j]);
             }
         }
@@ -368,7 +368,9 @@ public class Minesweeper {
         isPlaying = false;
         totalTiles = rows * cols;
         tilesExposed = 0;
-        
+        tilesFlagged = 0;
+        minesLabel.setText(Integer.toString(NUM_MINES - tilesFlagged));
+
         mainPanel.remove(gridPanel);
 
         buttons = new MinesweeperButton[rows][cols];
@@ -438,7 +440,8 @@ public class Minesweeper {
         minesLabel = new JLabel();
         time = 0;
         
-        minesLabel.setText(Integer.toString(totalTiles - tilesExposed));
+        minesLabel.setText(Integer.toString(NUM_MINES - tilesFlagged));
+
         timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -456,7 +459,7 @@ public class Minesweeper {
         menuButtons[0] = new MenuButton("Beginner",80 ,25);
         menuButtons[1] = new MenuButton("Intermediate", 91, 25);
         menuButtons[2] = new MenuButton("Expert",68, 25);
-        restartButton = new MenuButton("Restart",tileSize+2,tileSize+2);
+        restartButton = new MenuButton("Restart",tileSize+3,tileSize+3);
         restartButton.setText(null);
         restartButton.setIcon(RESTARTIMG);
         restartButton.addMouseListener(new MouseHandler(this));
@@ -470,6 +473,8 @@ public class Minesweeper {
         }
 
         scorePanel.add(new JLabel("Hall of Fame"));
+        //TODO: add top games
+        scorePanel.add(new JLabel("Recent Games"));
         ArrayList<String> highscores = scoreHandler.getHighscores(getMode());
         scoreLabels = new JLabel[highscores.size()];
         for (int i = 0; i < highscores.size(); i++) {
@@ -499,6 +504,7 @@ public class Minesweeper {
         NUM_MINES = 10;
         totalTiles = rows * cols;
         tilesExposed = 0;
+        tilesFlagged = 0;
         isPlaying = false;
         setMode(beginner);
 
