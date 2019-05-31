@@ -26,9 +26,7 @@ import java.awt.event.ActionListener;
 
 public class Minesweeper {
     Random rand = new Random();
-
     private ArrayList<Integer> mineNums;
-
     int NUM_MINES;
     int rows;
     int cols;
@@ -37,7 +35,6 @@ public class Minesweeper {
     int tilesFlagged;
     String mode;
     private int tileSize = 35;
-
     private int[][] grid;
     private JFrame frame;
     private JPanel mainPanel;
@@ -45,7 +42,6 @@ public class Minesweeper {
     private JPanel gridPanel;
     private JPanel settingPanel;
     private JPanel scorePanel;
-
     private MenuButton[] menuButtons;
     private MenuButton restartButton;
     private MinesweeperButton[][] buttons;
@@ -55,23 +51,17 @@ public class Minesweeper {
     private int time;
     JLabel minesLabel;
     int mines;
-
     boolean isPlaying;
-
     ImageIcon FLAGIMG;
     private ImageIcon MINEIMG;
     ImageIcon TILEIMG;
     private ImageIcon ACTIVEIMG;
     private ImageIcon PLAYERIMG;
     private ImageIcon RESTARTIMG;
-    
     private Sound[] sounds;
-
     private Cursor cursor;
     private ImageIcon CURSORIMG;
-
     private HighscoreHandler scoreHandler;
-
     static String beginner = "Beginner";
     static String intermediate = "Intermediate";
     static String expert = "Expert";
@@ -87,6 +77,7 @@ public class Minesweeper {
     String getMode() {
         return mode;
     }
+
     /** Helper method to generate list of mines
      *  @return an ArrayList of positions of the mines 
      */
@@ -371,8 +362,8 @@ public class Minesweeper {
         tilesFlagged = 0;
         minesLabel.setText(Integer.toString(NUM_MINES - tilesFlagged));
 
+        //Resets grid panel
         mainPanel.remove(gridPanel);
-
         buttons = new MinesweeperButton[rows][cols];
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(rows,cols,0,0)); 
@@ -382,6 +373,7 @@ public class Minesweeper {
         gridPanelConstraints.gridy = 1;
         gridPanelConstraints.anchor = GridBagConstraints.CENTER;
         mainPanel.add(gridPanel, gridPanelConstraints);
+
         timer.start();
         frame.pack();
         frame.setLocationRelativeTo(null); // Starts Frame in Center
@@ -411,6 +403,7 @@ public class Minesweeper {
         scorePanel = new JPanel();
         scorePanel.setLayout(new BoxLayout(scorePanel,BoxLayout.PAGE_AXIS));
         
+        //Setting main panel
         GridBagConstraints infoPanelConstraints = new GridBagConstraints();
         infoPanelConstraints.gridx = 0;
         infoPanelConstraints.gridy = 0;
@@ -427,21 +420,16 @@ public class Minesweeper {
         scorePanelConstraints.gridx = 1;
         scorePanelConstraints.gridy = 1;
         scorePanelConstraints.anchor = GridBagConstraints.LINE_END;
-
         mainPanel.add(infoPanel, infoPanelConstraints);
         mainPanel.add(gridPanel, gridPanelConstraints);
         mainPanel.add(settingPanel, settingPanelConstraints);
         mainPanel.add(scorePanel, scorePanelConstraints); //TODO: renable later
         
-
         buildButtons();
-
+        //Setting info panel
         timerLabel = new JLabel();
         minesLabel = new JLabel();
         time = 0;
-        
-        minesLabel.setText(Integer.toString(NUM_MINES - tilesFlagged));
-
         timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -451,14 +439,9 @@ public class Minesweeper {
                 }
             }
         });
-
         timer.start();
         timerLabel.setText(Integer.toString(time));
-
-        menuButtons = new MenuButton[3];
-        menuButtons[0] = new MenuButton("Beginner",80 ,25);
-        menuButtons[1] = new MenuButton("Intermediate", 91, 25);
-        menuButtons[2] = new MenuButton("Expert",68, 25);
+        minesLabel.setText(Integer.toString(NUM_MINES - tilesFlagged));
         restartButton = new MenuButton("Restart",tileSize+3,tileSize+3);
         restartButton.setText(null);
         restartButton.setIcon(RESTARTIMG);
@@ -467,13 +450,22 @@ public class Minesweeper {
         infoPanel.add(restartButton);
         infoPanel.add(minesLabel);
 
+        //Setting settings panel
+        menuButtons = new MenuButton[3];
+        menuButtons[0] = new MenuButton("Beginner",80 ,25);
+        menuButtons[1] = new MenuButton("Intermediate", 91, 25);
+        menuButtons[2] = new MenuButton("Expert",68, 25);
         for (MenuButton menuButton : menuButtons) {
             settingPanel.add(menuButton);
             menuButton.addMouseListener(new MouseHandler(this));
         }
 
+        //Setting score panel
         scorePanel.add(new JLabel("Hall of Fame"));
-        //TODO: add top games
+        ArrayList<String> topThree = scoreHandler.getHighscores();
+        for (String score : topThree) {
+            scorePanel.add(new JLabel(score));
+        }
         scorePanel.add(new JLabel("Recent Games"));
         ArrayList<String> highscores = scoreHandler.getHighscores(getMode());
         scoreLabels = new JLabel[highscores.size()];
@@ -484,6 +476,7 @@ public class Minesweeper {
             scorePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
         
+        //Setting frame
         frame = new JFrame("Mariosweeper");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(mainPanel);
@@ -512,7 +505,7 @@ public class Minesweeper {
         initializeFrame();
         
         sounds = new Sound[] {
-             new Sound("sounds/athletic.wav"),
+            new Sound("sounds/athletic.wav"),
             };
         sounds[0].playMusic();
     } 

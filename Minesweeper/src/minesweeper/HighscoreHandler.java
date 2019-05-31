@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.regex.*;
 
@@ -68,17 +69,40 @@ public class HighscoreHandler {
 
     ArrayList<String> getHighscores() {
         ArrayList<String> result = new ArrayList<>();
+
         String currentLine;
+        Pattern scorePattern = Pattern.compile("(?<=| )\\d+");
+        Matcher scoreMatcher;
+        ArrayList<Integer> beginnerArray = new ArrayList<>();
+        ArrayList<Integer> intermediateArray = new ArrayList<>();
+        ArrayList<Integer> expertArray = new ArrayList<>();
+
         try {
             while ((currentLine = reader.readLine()) != null) { // Reads until end of file
-                ;
+                scoreMatcher = scorePattern.matcher(currentLine);
+                if (scoreMatcher.find()) {
+                    if (currentLine.matches("^Beginner.*")){
+                        beginnerArray.add(Integer.parseInt(scoreMatcher.group()));
+                    } else if (currentLine.matches("^Intermediate.*")) {
+                        intermediateArray.add(Integer.parseInt(scoreMatcher.group()));
+                    } else if (currentLine.matches("^Expert.*")) {
+                        expertArray.add(Integer.parseInt(scoreMatcher.group()));
+                    }
+                }
             }
-            int beginnerMin = Integer.MAX_VALUE;
-            int intermediateMin = Integer.MAX_VALUE;
-            int expertMin = Integer.MAX_VALUE;
-            
+            if (beginnerArray.size() > 0) {
+                result.add("Beginner | " + Integer.toString(Collections.min(beginnerArray)));
+            }
+            if (intermediateArray.size() > 0) {
+                result.add("Intermediate | " +Integer.toString(Collections.min(intermediateArray)));
+            }
+            if (expertArray.size() > 0) {
+                result.add("Expert | " +Integer.toString(Collections.min(expertArray)));
+            }
+
             reader.close();
             reader = new BufferedReader(new FileReader(fileLocation));
+            
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
