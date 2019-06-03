@@ -9,19 +9,17 @@ import java.awt.event.ActionListener;
 
 /**
  * Programming 12 Minesweeper Project
- * Last edited: 2019-05-21
+ * Last edited: 2019-06-02
  * @author Tony Zhao
- * @version v0.1.
+ * @version v0.2
  * 
  * TODO:
  * Add sound effects for clear 
- * Implement highscores
- * Implement mines left counter
- * Fix screen resizing on reset? 
  * 
  * Extra Features:
  * Double clicking 
  * Custom cursor
+ * Detailed score tracking
  */
 
 public class Minesweeper {
@@ -137,7 +135,6 @@ public class Minesweeper {
      * @param coord of the first click
      */
     void buildGrid(int[] coord) {
-
         ArrayList<Integer> notPermissible = new ArrayList<>();
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -235,7 +232,8 @@ public class Minesweeper {
         if (totalTiles - tilesExposed == NUM_MINES) {
             timer.stop();
             scoreHandler.addHighscore(time, mode);
-            System.out.println(scoreHandler.getHighscores(getMode()));
+            minesLabel.setText(Integer.toString(NUM_MINES - tilesFlagged));
+            updateHighscores();            
             isPlaying = false;
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
@@ -337,6 +335,35 @@ public class Minesweeper {
         }
     }
 
+    void updateHighscores() {
+        mainPanel.remove(scorePanel);
+        scorePanel = new JPanel();
+        scorePanel.setLayout(new BoxLayout(scorePanel,BoxLayout.PAGE_AXIS));
+        scorePanel.add(new JLabel("Hall of Fame"));
+        ArrayList<String> topThree = scoreHandler.getTopScores();
+        for (String score : topThree) {
+            scorePanel.add(new JLabel(score));
+        }
+        scorePanel.add(new JLabel(" "));
+        scorePanel.add(new JLabel("Recent Games"));
+        ArrayList<String> highscores = scoreHandler.getHighscores(getMode());
+        scoreLabels = new JLabel[highscores.size()];
+        for (int i = 0; i < highscores.size(); i++) {
+            scoreLabels[i] = new JLabel(highscores.get(i));
+            scorePanel.add(Box.createHorizontalGlue());
+            scorePanel.add(scoreLabels[i]);
+            scorePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        }
+        scorePanel.add(new JLabel("Average Time"));
+        scorePanel.add(new JLabel(mode + scoreHandler.averageTime(mode)));
+        GridBagConstraints scorePanelConstraints = new GridBagConstraints();
+        scorePanelConstraints.gridx = 1;
+        scorePanelConstraints.gridy = 1;
+        scorePanelConstraints.anchor = GridBagConstraints.LINE_END;
+        mainPanel.add(scorePanel, scorePanelConstraints);
+        frame.pack();
+    }
+
     /** Helper method to create a scaled image icon
      * @return ImageIcon 
      * @param file an image file to convert 
@@ -374,6 +401,8 @@ public class Minesweeper {
         gridPanelConstraints.anchor = GridBagConstraints.CENTER;
         mainPanel.add(gridPanel, gridPanelConstraints);
 
+        updateHighscores();
+
         timer.start();
         frame.pack();
         frame.setLocationRelativeTo(null); // Starts Frame in Center
@@ -391,7 +420,6 @@ public class Minesweeper {
     }
 
     void initializeFrame() {
-        
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
         infoPanel = new JPanel();
@@ -425,7 +453,9 @@ public class Minesweeper {
         mainPanel.add(settingPanel, settingPanelConstraints);
         mainPanel.add(scorePanel, scorePanelConstraints); //TODO: renable later
         
+        //Setting grid panel
         buildButtons();
+
         //Setting info panel
         timerLabel = new JLabel();
         minesLabel = new JLabel();
@@ -462,10 +492,11 @@ public class Minesweeper {
 
         //Setting score panel
         scorePanel.add(new JLabel("Hall of Fame"));
-        ArrayList<String> topThree = scoreHandler.getHighscores();
+        ArrayList<String> topThree = scoreHandler.getTopScores();
         for (String score : topThree) {
             scorePanel.add(new JLabel(score));
         }
+        scorePanel.add(new JLabel(" "));
         scorePanel.add(new JLabel("Recent Games"));
         ArrayList<String> highscores = scoreHandler.getHighscores(getMode());
         scoreLabels = new JLabel[highscores.size()];
@@ -475,6 +506,8 @@ public class Minesweeper {
             scorePanel.add(scoreLabels[i]);
             scorePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
+        scorePanel.add(new JLabel("Average Time"));
+        scorePanel.add(new JLabel(mode + " " + scoreHandler.averageTime(mode)));
         
         //Setting frame
         frame = new JFrame("Mariosweeper");
@@ -506,7 +539,8 @@ public class Minesweeper {
         
         sounds = new Sound[] {
             new Sound("sounds/athletic.wav"),
+            new Sound("sounds/flowergarden.wav")
             };
-        sounds[0].playMusic();
+        sounds[1].playMusic();
     } 
 }

@@ -2,7 +2,6 @@ package minesweeper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,7 +25,6 @@ public class HighscoreHandler {
             reader = new BufferedReader(new FileReader(fileLocation));
             writer = new BufferedWriter(new FileWriter(fileLocation, true)); //second argument appends lines
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -41,7 +39,6 @@ public class HighscoreHandler {
             writer.close();
             writer = new BufferedWriter(new FileWriter(fileLocation, true));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -60,14 +57,41 @@ public class HighscoreHandler {
             reader.close();
             reader = new BufferedReader(new FileReader(fileLocation));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         return result;
     }
 
-    ArrayList<String> getHighscores() {
+    double averageTime(String category) {
+        double result = 0;
+        Pattern scorePattern = Pattern.compile("(?<=| )\\d+");
+        Matcher scoreMatcher;
+        
+        ArrayList<String> scores = getHighscores(category);
+        if (scores.size() > 5) {
+            for (int i = 1; i <= 5; i++) {
+                String line = scores.get(scores.size() - i);
+                scoreMatcher = scorePattern.matcher(line);
+                if (scoreMatcher.find()) {
+                    result += Double.parseDouble(scoreMatcher.group());
+                }
+            }
+            result /= 5;
+        } else {
+            for (int i = 1; i <= scores.size(); i++) {
+                String line = scores.get(scores.size() - i);
+                scoreMatcher = scorePattern.matcher(line);
+                if (scoreMatcher.find()) {
+                    result += Double.parseDouble(scoreMatcher.group());
+                }
+            }
+            result /= scores.size();
+        }
+        return result;
+    }
+
+    ArrayList<String> getTopScores() {
         ArrayList<String> result = new ArrayList<>();
 
         String currentLine;
@@ -99,19 +123,18 @@ public class HighscoreHandler {
             if (expertArray.size() > 0) {
                 result.add("Expert | " +Integer.toString(Collections.min(expertArray)));
             }
-
             reader.close();
             reader = new BufferedReader(new FileReader(fileLocation));
             
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return result;
     }
-    /*
+    
     ArrayList<String> getHighscores(String category, int numberOfEntries){
-        ;
+        ArrayList<String> result = getHighscores(category);
+        return new ArrayList<String>(result.subList(0, numberOfEntries - 1));
     }
-    */
+    
 }

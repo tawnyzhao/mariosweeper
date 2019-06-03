@@ -78,7 +78,5 @@ public class MinesweeperButton extends JButton {
         this.setBackground(Color.lightGray);
         }
         this.setFont(font);
-        
     }
-    
 }
