@@ -54,4 +54,9 @@ public class Sound {
         clip.stop();
     }
 
+    /** Restarts a clip from the beginning */
+    void restart() {
+        clip.setMicrosecondPosition(0);
+    }
+
 }

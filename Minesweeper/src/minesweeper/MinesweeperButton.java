@@ -24,13 +24,15 @@ public class MinesweeperButton extends JButton {
     private Font font;
     private boolean flagged;
     
-    public MinesweeperButton(int size){
+    public MinesweeperButton(int size, MouseHandler mHandler){
         coordinates = new int[2];
         dimension = new Dimension(size,size);
         setPreferredSize(dimension);
         exposed = false;
         font = new Font(Font.DIALOG, Font.BOLD, 20);
         flagged = false;
+        setFocusable(false);
+        addMouseListener(mHandler);
     }
 
     void flag() {
@@ -72,8 +74,7 @@ public class MinesweeperButton extends JButton {
         if (value == -1) {
             this.setBackground(Color.lightGray);
             this.setRolloverEnabled(false);
-
-
+            
         } else { 
         this.setBackground(Color.lightGray);
         }

@@ -63,7 +63,7 @@ public class HighscoreHandler {
         return result;
     }
 
-    double averageTime(String category) {
+    String getAverageTime(String category) {
         double result = 0;
         Pattern scorePattern = Pattern.compile("(?<=| )\\d+");
         Matcher scoreMatcher;
@@ -78,6 +78,7 @@ public class HighscoreHandler {
                 }
             }
             result /= 5;
+            return Double.toString(result) + " ao5";
         } else {
             for (int i = 1; i <= scores.size(); i++) {
                 String line = scores.get(scores.size() - i);
@@ -87,8 +88,8 @@ public class HighscoreHandler {
                 }
             }
             result /= scores.size();
+            return Double.toString(result) + " ao" + Integer.toString(scores.size());
         }
-        return result;
     }
 
     ArrayList<String> getTopScores() {

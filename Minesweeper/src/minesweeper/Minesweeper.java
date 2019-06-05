@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 
 public class Minesweeper {
     Random rand = new Random();
-    private ArrayList<Integer> mineNums;
     int NUM_MINES;
     int rows;
     int cols;
@@ -32,34 +31,43 @@ public class Minesweeper {
     int tilesExposed;
     int tilesFlagged;
     String mode;
+
     private int tileSize = 35;
     private int[][] grid;
+
     private JFrame frame;
     private JPanel mainPanel;
     private JPanel infoPanel;
     private JPanel gridPanel;
     private JPanel settingPanel;
     private JPanel scorePanel;
+    private JPanel achievementPanel;
+
     private MenuButton[] menuButtons;
     private MenuButton restartButton;
+    private MenuButton toggleAchievementPanelButton;
+    private MenuButton toggleScorePanelButton;
+
     private MinesweeperButton[][] buttons;
     private JLabel timerLabel;
     private JLabel[] scoreLabels;
     private Timer timer;
     private int time;
     JLabel minesLabel;
-    int mines;
     boolean isPlaying;
     ImageIcon FLAGIMG;
-    private ImageIcon MINEIMG;
+    ImageIcon MINEIMG;
     ImageIcon TILEIMG;
-    private ImageIcon ACTIVEIMG;
-    private ImageIcon PLAYERIMG;
-    private ImageIcon RESTARTIMG;
+    ImageIcon ACTIVEIMG;
+    ImageIcon RESTARTIMG;
+    ImageIcon FLOWERIMG;
+
     private Sound[] sounds;
+    Sound currentSound;
     private Cursor cursor;
     private ImageIcon CURSORIMG;
     private HighscoreHandler scoreHandler;
+
     static String beginner = "Beginner";
     static String intermediate = "Intermediate";
     static String expert = "Expert";
@@ -77,7 +85,7 @@ public class Minesweeper {
     }
 
     /** Helper method to generate list of mines
-     *  @return an ArrayList of positions of the mines 
+     *  @return an ArrayList of positions of the mines.
      */
     private ArrayList<Integer> generateMines() {
         ArrayList<Integer> mineList = new ArrayList<>();
@@ -92,7 +100,11 @@ public class Minesweeper {
         return mineList;
     }
 
-    private ArrayList<Integer> generateMines(ArrayList notPermissible) {
+    /** Helper method to generate list of mines, excluding the first click
+     * @param notPermissible not permissible positions of mines
+     * @return an ArrayList of the positions of the mines.
+     */
+    private ArrayList<Integer> generateMines(ArrayList<Integer> notPermissible) {
         ArrayList<Integer> mineList = new ArrayList<>();
         for (int i = 0; i < NUM_MINES; i++) {
             int newMine = rand.nextInt(rows*cols);
@@ -108,7 +120,7 @@ public class Minesweeper {
     /** Builds the grid with the values of the buttons randomly
      */
     private void buildGrid() {
-        mineNums = new ArrayList<>(generateMines());
+        ArrayList<Integer> mineNums = new ArrayList<>(generateMines());
         grid = new int[rows][cols];
         for (int mineNum : mineNums) { // Adds mines
             grid[mineNum/cols][mineNum%cols] = -1;
@@ -143,7 +155,7 @@ public class Minesweeper {
             }
         }
 
-        mineNums = new ArrayList<>(generateMines(notPermissible));
+        ArrayList<Integer> mineNums = new ArrayList<>(generateMines(notPermissible));
 
         grid = new int[rows][cols];
         for (int mineNum : mineNums) { // Adds mines
@@ -190,9 +202,8 @@ public class Minesweeper {
         buttons = new MinesweeperButton[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                buttons[i][j] = new MinesweeperButton(tileSize);
+                buttons[i][j] = new MinesweeperButton(tileSize, new MouseHandler(this));
                 buttons[i][j].setCoordinates(i,j);
-                buttons[i][j].addMouseListener(new MouseHandler(this));
                 buttons[i][j].setIcon(TILEIMG);
                 buttons[i][j].setRolloverIcon(ACTIVEIMG);
                 buttons[i][j].setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
@@ -210,6 +221,10 @@ public class Minesweeper {
                 buttons[i][j].setValue(grid[i][j]);
             }
         }
+    }
+
+    void toggleAchievementPanel(){
+
     }
 
     /** Function to end game after hitting a mine.
@@ -335,6 +350,8 @@ public class Minesweeper {
         }
     }
 
+    /** Updates the score panel, refreshing highscores
+     */
     void updateHighscores() {
         mainPanel.remove(scorePanel);
         scorePanel = new JPanel();
@@ -354,23 +371,30 @@ public class Minesweeper {
             scorePanel.add(scoreLabels[i]);
             scorePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
+        scorePanel.add(new JLabel(" "));
         scorePanel.add(new JLabel("Average Time"));
-        scorePanel.add(new JLabel(mode + scoreHandler.averageTime(mode)));
+        scorePanel.add(new JLabel(mode + " | " + scoreHandler.getAverageTime(mode)));
         GridBagConstraints scorePanelConstraints = new GridBagConstraints();
-        scorePanelConstraints.gridx = 1;
+        scorePanelConstraints.gridx = 2;
         scorePanelConstraints.gridy = 1;
+        scorePanelConstraints.insets = new Insets(0,5,0,5);
         scorePanelConstraints.anchor = GridBagConstraints.LINE_END;
         mainPanel.add(scorePanel, scorePanelConstraints);
         frame.pack();
     }
 
-    /** Helper method to create a scaled image icon
+    /** Helper method to create a scaled square image icon
      * @return ImageIcon 
      * @param file an image file to convert 
      */
     private ImageIcon generateIcon(String file) {
         return new ImageIcon(new ImageIcon(file).getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH));
     }
+
+    private ImageIcon generateIcon(String file, int size) {
+        return new ImageIcon(new ImageIcon(file).getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH));
+    }
+
     
     /**  Restarts the game with new sizes and mines
      * @param rows 
@@ -396,11 +420,10 @@ public class Minesweeper {
         gridPanel.setLayout(new GridLayout(rows,cols,0,0)); 
         buildButtons();
         GridBagConstraints gridPanelConstraints = new GridBagConstraints();
-        gridPanelConstraints.gridx = 0;
+        gridPanelConstraints.gridx = 1;
         gridPanelConstraints.gridy = 1;
         gridPanelConstraints.anchor = GridBagConstraints.CENTER;
         mainPanel.add(gridPanel, gridPanelConstraints);
-
         updateHighscores();
 
         timer.start();
@@ -408,17 +431,20 @@ public class Minesweeper {
         frame.setLocationRelativeTo(null); // Starts Frame in Center
     }
 
+    /** Initializes images
+     */
     void initializeImages() {
         TILEIMG = generateIcon("images/tile.png");
         FLAGIMG = generateIcon("images/flag.png");
         MINEIMG = generateIcon("images/mine.png");
         ACTIVEIMG = generateIcon("images/active.png");
-        PLAYERIMG = generateIcon("images/player.png");
         RESTARTIMG = generateIcon("images/restart.png");
         CURSORIMG = generateIcon("images/cursor.png");
-        cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG.getImage(),new Point(0,0), "Cursor");
+        FLOWERIMG = generateIcon("images/flower.png");
     }
 
+    /** Builds JPanel and JFrame objects
+     */
     void initializeFrame() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
@@ -430,28 +456,38 @@ public class Minesweeper {
         settingPanel.setLayout(new FlowLayout());
         scorePanel = new JPanel();
         scorePanel.setLayout(new BoxLayout(scorePanel,BoxLayout.PAGE_AXIS));
+        achievementPanel = new JPanel();
+        achievementPanel.setLayout(new BoxLayout(achievementPanel, BoxLayout.PAGE_AXIS));
         
         //Setting main panel
         GridBagConstraints infoPanelConstraints = new GridBagConstraints();
-        infoPanelConstraints.gridx = 0;
+        infoPanelConstraints.gridx = 1;
         infoPanelConstraints.gridy = 0;
         infoPanelConstraints.anchor = GridBagConstraints.PAGE_START;
         GridBagConstraints gridPanelConstraints = new GridBagConstraints();
-        gridPanelConstraints.gridx = 0;
+        gridPanelConstraints.gridx = 1;
         gridPanelConstraints.gridy = 1;
         gridPanelConstraints.anchor = GridBagConstraints.CENTER;
         GridBagConstraints settingPanelConstraints = new GridBagConstraints();
-        settingPanelConstraints.gridx = 0;
+        settingPanelConstraints.gridx = 1;
         settingPanelConstraints.gridy = 2;
         settingPanelConstraints.anchor = GridBagConstraints.PAGE_END;
         GridBagConstraints scorePanelConstraints = new GridBagConstraints();
-        scorePanelConstraints.gridx = 1;
+        scorePanelConstraints.gridx = 2;
         scorePanelConstraints.gridy = 1;
+        scorePanelConstraints.insets = new Insets(0,5,0,5);
         scorePanelConstraints.anchor = GridBagConstraints.LINE_END;
+        GridBagConstraints achievementPanelConstraints = new GridBagConstraints();
+        achievementPanelConstraints.gridx = 0;
+        achievementPanelConstraints.gridy = 1;
+        achievementPanelConstraints.insets = new Insets(0,5,0,5);
+        achievementPanelConstraints.anchor = GridBagConstraints.LINE_START;
+
         mainPanel.add(infoPanel, infoPanelConstraints);
         mainPanel.add(gridPanel, gridPanelConstraints);
         mainPanel.add(settingPanel, settingPanelConstraints);
-        mainPanel.add(scorePanel, scorePanelConstraints); //TODO: renable later
+        mainPanel.add(scorePanel, scorePanelConstraints); 
+        mainPanel.add(achievementPanel, achievementPanelConstraints);
         
         //Setting grid panel
         buildButtons();
@@ -476,15 +512,26 @@ public class Minesweeper {
         restartButton.setText(null);
         restartButton.setIcon(RESTARTIMG);
         restartButton.addMouseListener(new MouseHandler(this));
+        restartButton.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        restartButton.setBackground(new Color(0,0,0,0));
+        restartButton.setOpaque(false);
+        restartButton.setRolloverEnabled(false);
+
+        toggleAchievementPanelButton = new MenuButton(".",tileSize,tileSize);
+        toggleScorePanelButton = new MenuButton(".",tileSize,tileSize);
+        toggleAchievementPanelButton.setAlignmentX((float) 0.0);
+        infoPanel.add(toggleAchievementPanelButton);
         infoPanel.add(timerLabel);
         infoPanel.add(restartButton);
         infoPanel.add(minesLabel);
+        infoPanel.add(toggleScorePanelButton);
+
 
         //Setting settings panel
         menuButtons = new MenuButton[3];
-        menuButtons[0] = new MenuButton("Beginner",80 ,25);
-        menuButtons[1] = new MenuButton("Intermediate", 91, 25);
-        menuButtons[2] = new MenuButton("Expert",68, 25);
+        menuButtons[0] = new MenuButton("Beginner",77 ,24);
+        menuButtons[1] = new MenuButton("Intermediate", 91, 24);
+        menuButtons[2] = new MenuButton("Expert",68, 24);
         for (MenuButton menuButton : menuButtons) {
             settingPanel.add(menuButton);
             menuButton.addMouseListener(new MouseHandler(this));
@@ -506,9 +553,22 @@ public class Minesweeper {
             scorePanel.add(scoreLabels[i]);
             scorePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
+        scorePanel.add(new JLabel(" "));
         scorePanel.add(new JLabel("Average Time"));
-        scorePanel.add(new JLabel(mode + " " + scoreHandler.averageTime(mode)));
+        scorePanel.add(new JLabel(mode + " | " + scoreHandler.getAverageTime(mode)));
         
+        //Setting achievement panel
+        achievementPanel.add(new JLabel("Music"));
+        achievementPanel.add(new SoundButton("Athletic", sounds[0], new MouseHandler(this)));
+        achievementPanel.add(new SoundButton("Flower Garden", sounds[1], new MouseHandler(this)));
+        achievementPanel.add(new SoundButton("Fever", sounds[2], new MouseHandler(this)));
+        achievementPanel.add(new SoundButton("Lullaby", sounds[3], new MouseHandler(this)));
+        achievementPanel.add(new SoundButton("Underwater", sounds[4], new MouseHandler(this)));
+        achievementPanel.add(new SoundButton("Overworld", sounds[5], new MouseHandler(this)));
+        achievementPanel.add(new JLabel(" "));
+        achievementPanel.add(new JLabel("Change Flavor"));
+        achievementPanel.add(new ThemeButton(MINEIMG, new MouseHandler(this)));
+
         //Setting frame
         frame = new JFrame("Mariosweeper");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -519,6 +579,17 @@ public class Minesweeper {
         frame.setLocationRelativeTo(null); // Starts Frame in Center
         frame.setIconImage(ACTIVEIMG.getImage());
         frame.setCursor(cursor);
+    }
+
+    void initializeSounds() {
+        sounds = new Sound[] {
+            new Sound("sounds/athletic.wav"),
+            new Sound("sounds/flowergarden.wav"),
+            new Sound("sounds/fever.wav"),
+            new Sound("sounds/Lullaby.wav"),
+            new Sound("sounds/underwater.wav"),
+            new Sound("sounds/overworld.wav")
+            };
     }
     
     public Minesweeper(){
@@ -535,12 +606,10 @@ public class Minesweeper {
         setMode(beginner);
 
         initializeImages();
+        initializeSounds();
         initializeFrame();
-        
-        sounds = new Sound[] {
-            new Sound("sounds/athletic.wav"),
-            new Sound("sounds/flowergarden.wav")
-            };
-        sounds[1].playMusic();
+        cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG.getImage(),new Point(0,0), "Cursor");
+        currentSound = sounds[0];
+        sounds[0].playMusic();
     } 
 }

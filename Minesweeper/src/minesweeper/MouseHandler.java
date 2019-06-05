@@ -109,7 +109,14 @@ public class MouseHandler extends MouseAdapter {
                 ms.reset(16,30,99);
             } else if (button.getType().equals("Restart"))   {
                 ms.reset(ms.rows,ms.cols,ms.NUM_MINES);
+            } else if (button.getType().equals(".")) {
+                //ms.scorePanel.setVisible(false);
             }
+        } else if (me.getSource() instanceof SoundButton) {
+            SoundButton button = (SoundButton) (me.getSource());
+            ms.currentSound.stop();
+            ms.currentSound = button.getSound();
+            ms.currentSound.playMusic();
         }
         isLeftPressed = false;
         isRightPressed = false;
