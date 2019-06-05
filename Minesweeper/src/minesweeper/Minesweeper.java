@@ -35,13 +35,13 @@ public class Minesweeper {
     private int tileSize = 35;
     private int[][] grid;
 
-    private JFrame frame;
+    JFrame frame;
     private JPanel mainPanel;
     private JPanel infoPanel;
     private JPanel gridPanel;
     private JPanel settingPanel;
-    private JPanel scorePanel;
-    private JPanel achievementPanel;
+    JPanel scorePanel;
+    JPanel achievementPanel;
 
     private MenuButton[] menuButtons;
     private MenuButton restartButton;
@@ -56,11 +56,12 @@ public class Minesweeper {
     JLabel minesLabel;
     boolean isPlaying;
     ImageIcon FLAGIMG;
-    ImageIcon MINEIMG;
+    ImageIcon BOMBIMG;
     ImageIcon TILEIMG;
     ImageIcon ACTIVEIMG;
     ImageIcon RESTARTIMG;
     ImageIcon FLOWERIMG;
+    ImageIcon activeMineImage;
 
     private Sound[] sounds;
     Sound currentSound;
@@ -235,7 +236,8 @@ public class Minesweeper {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (buttons[i][j].getValue() == -1) {
-                    buttons[i][j].setIcon(MINEIMG);                }
+                    buttons[i][j].setIcon(activeMineImage);                
+                }
                 buttons[i][j].expose();
             }
         }
@@ -436,7 +438,7 @@ public class Minesweeper {
     void initializeImages() {
         TILEIMG = generateIcon("images/tile.png");
         FLAGIMG = generateIcon("images/flag.png");
-        MINEIMG = generateIcon("images/mine.png");
+        BOMBIMG = generateIcon("images/mine.png");
         ACTIVEIMG = generateIcon("images/active.png");
         RESTARTIMG = generateIcon("images/restart.png");
         CURSORIMG = generateIcon("images/cursor.png");
@@ -508,7 +510,7 @@ public class Minesweeper {
         timer.start();
         timerLabel.setText(Integer.toString(time));
         minesLabel.setText(Integer.toString(NUM_MINES - tilesFlagged));
-        restartButton = new MenuButton("Restart",tileSize+3,tileSize+3);
+        restartButton = new MenuButton("Restart",tileSize,tileSize);
         restartButton.setText(null);
         restartButton.setIcon(RESTARTIMG);
         restartButton.addMouseListener(new MouseHandler(this));
@@ -517,9 +519,10 @@ public class Minesweeper {
         restartButton.setOpaque(false);
         restartButton.setRolloverEnabled(false);
 
-        toggleAchievementPanelButton = new MenuButton(".",tileSize,tileSize);
-        toggleScorePanelButton = new MenuButton(".",tileSize,tileSize);
-        toggleAchievementPanelButton.setAlignmentX((float) 0.0);
+        toggleAchievementPanelButton = new MenuButton("<");
+        toggleScorePanelButton = new MenuButton(">");
+        toggleAchievementPanelButton.addMouseListener(new MouseHandler(this));
+        toggleScorePanelButton.addMouseListener(new MouseHandler(this));
         infoPanel.add(toggleAchievementPanelButton);
         infoPanel.add(timerLabel);
         infoPanel.add(restartButton);
@@ -567,7 +570,7 @@ public class Minesweeper {
         achievementPanel.add(new SoundButton("Overworld", sounds[5], new MouseHandler(this)));
         achievementPanel.add(new JLabel(" "));
         achievementPanel.add(new JLabel("Change Flavor"));
-        achievementPanel.add(new ThemeButton(MINEIMG, new MouseHandler(this)));
+        achievementPanel.add(new ThemeButton(BOMBIMG, FLOWERIMG, new MouseHandler(this)));
 
         //Setting frame
         frame = new JFrame("Mariosweeper");
@@ -606,6 +609,8 @@ public class Minesweeper {
         setMode(beginner);
 
         initializeImages();
+        activeMineImage = BOMBIMG;
+
         initializeSounds();
         initializeFrame();
         cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG.getImage(),new Point(0,0), "Cursor");

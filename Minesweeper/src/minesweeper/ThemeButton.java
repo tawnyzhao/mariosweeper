@@ -1,13 +1,29 @@
 package minesweeper;
 
+import java.awt.Color;
 import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
 public class ThemeButton extends JButton {
-    public ThemeButton(ImageIcon icon, MouseHandler mHandler){
+    ImageIcon icon;
+    ImageIcon altIcon;
+    public ThemeButton(ImageIcon icon, ImageIcon altIcon, MouseHandler mHandler){
         super(icon);
+        this.icon = icon;
+        this.altIcon = altIcon;
         addMouseListener(mHandler);
+        setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        setBackground(new Color(0,0,0,0));
+        setOpaque(false);
+        setFocusable(false);
+        setRolloverEnabled(false);
     }
-    
+
+    void swapIcon() {
+        ImageIcon temp = icon;
+        icon = altIcon;
+        altIcon = temp;
+        setIcon(icon);
+    }
 }

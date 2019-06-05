@@ -16,8 +16,8 @@ public class MenuButton extends JButton {
         setPreferredSize(dimension);
         font = new Font(Font.DIALOG, Font.BOLD, 9);
         setFont(font);
-        this.setFocusPainted(false);
-        this.setContentAreaFilled(false);
+        setFocusPainted(false);
+        setContentAreaFilled(false);
     }
 
     public MenuButton(String type) {

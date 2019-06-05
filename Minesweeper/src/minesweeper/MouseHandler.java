@@ -67,12 +67,12 @@ public class MouseHandler extends MouseAdapter {
                     button.flag();
                     if (button.isFlagged()) {
                         ms.tilesFlagged++;
-                        ms.minesLabel.setText(Integer.toString(ms.NUM_MINES - ms.tilesFlagged));
                         button.setIcon(ms.FLAGIMG);
                     } else {
                         ms.tilesFlagged--;
                         button.setIcon(ms.TILEIMG);
                     }
+                    ms.minesLabel.setText(Integer.toString(ms.NUM_MINES - ms.tilesFlagged));
                 } else if (!button.isFlagged()) {
                     if (button.getValue() == -1) {
                         ms.endGame();
@@ -109,14 +109,24 @@ public class MouseHandler extends MouseAdapter {
                 ms.reset(16,30,99);
             } else if (button.getType().equals("Restart"))   {
                 ms.reset(ms.rows,ms.cols,ms.NUM_MINES);
-            } else if (button.getType().equals(".")) {
-                //ms.scorePanel.setVisible(false);
+            } else if (button.getType().equals(">")) {
+                System.out.print(ms.scorePanel.isVisible());
+                ms.scorePanel.setVisible(!ms.scorePanel.isVisible());
+                ms.frame.pack();
+            } else if (button.getType().equals("<")) {
+                ms.achievementPanel.setVisible(!ms.achievementPanel.isVisible());
+                ms.frame.pack();
             }
         } else if (me.getSource() instanceof SoundButton) {
             SoundButton button = (SoundButton) (me.getSource());
             ms.currentSound.stop();
             ms.currentSound = button.getSound();
+            ms.currentSound.restart();
             ms.currentSound.playMusic();
+        } else if (me.getSource() instanceof ThemeButton) {
+            ThemeButton button = (ThemeButton) (me.getSource());
+            button.swapIcon();
+            ms.activeMineImage = (ImageIcon) button.getIcon();
         }
         isLeftPressed = false;
         isRightPressed = false;

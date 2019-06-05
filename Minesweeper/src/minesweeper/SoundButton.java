@@ -11,6 +11,8 @@ public class SoundButton extends JButton {
         super(text);
         this.sound = sound;
         addMouseListener(mHandler);
+        setFocusPainted(false);
+        setContentAreaFilled(false);
         
     }
     /** Overwritten method to allow the button to take the full width in BoxLayout
