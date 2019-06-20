@@ -34,7 +34,6 @@ public class MenuButtonHandler extends MouseAdapter {
         } else if (button.getType().equals("Restart"))   {
             ms.reset(ms.rows,ms.cols,ms.NUM_MINES);
         } else if (button.getType().equals(">")) {
-            System.out.print(ms.scorePanel.isVisible());
             ms.scorePanel.setVisible(!ms.scorePanel.isVisible());
             ms.frame.pack();
         } else if (button.getType().equals("<")) {

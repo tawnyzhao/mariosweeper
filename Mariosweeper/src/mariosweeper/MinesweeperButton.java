@@ -6,6 +6,7 @@
 package mariosweeper;
 
 import java.awt.*;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -67,16 +68,20 @@ public class MinesweeperButton extends JButton {
         if (value != 0 && value != -1) {
             this.setText(String.valueOf(value));
             this.setIcon(null);
+            setBorder(BorderFactory.createLineBorder(Color.black));
+
         }
         if (value == 0) {
             this.setIcon(null);
+            setBorder(BorderFactory.createLineBorder(Color.black));
+
         }
         if (value == -1) {
             this.setBackground(Color.lightGray);
             this.setRolloverEnabled(false);
             
         } else { 
-        this.setBackground(Color.lightGray);
+            this.setBackground(Color.lightGray);
         }
         this.setFont(font);
     }

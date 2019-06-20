@@ -23,6 +23,10 @@ public class MenuButton extends JButton {
     public MenuButton(String type) {
         super(type);
         this.type = type;
+        font = new Font(Font.DIALOG, Font.BOLD, 9);
+        setFont(font);
+        setFocusPainted(false);
+        setContentAreaFilled(false);
     }
 
     public MenuButton (ImageIcon image) {

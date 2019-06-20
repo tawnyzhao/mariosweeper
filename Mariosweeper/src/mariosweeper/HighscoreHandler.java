@@ -1,5 +1,5 @@
 package mariosweeper;
-
+import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -19,14 +19,11 @@ public class HighscoreHandler {
     private DateFormat dateFormat;
     private String fileLocation;
 
-    public HighscoreHandler(String fileLocation) {
+    public HighscoreHandler(String fileLocation) throws FileNotFoundException, IOException {
         this.fileLocation = fileLocation;
-        try {
-            reader = new BufferedReader(new FileReader(fileLocation));
-            writer = new BufferedWriter(new FileWriter(fileLocation, true)); //second argument appends lines
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        reader = new BufferedReader(new FileReader(fileLocation));
+        writer = new BufferedWriter(new FileWriter(fileLocation, true)); //second argument appends lines
+        
         dateFormat = new SimpleDateFormat("yyyy/MM/dd");
     }
 
@@ -59,7 +56,9 @@ public class HighscoreHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        if (result.size() > 7) {
+            result = new ArrayList<>(result.subList(result.size()-7,result.size()-1));
+        }
         return result;
     }
 

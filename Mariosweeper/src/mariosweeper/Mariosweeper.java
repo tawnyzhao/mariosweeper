@@ -3,13 +3,13 @@ package mariosweeper;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
-import java.net.URL;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.*;
 
 /**
  * Programming 12 Minesweeper Project Last edited: 2019-06-02
@@ -55,6 +55,7 @@ public class Mariosweeper {
     private int time;
     JLabel minesLabel;
     boolean isPlaying;
+    
     ImageIcon FLAGIMG;
     ImageIcon BOMBIMG;
     ImageIcon TILEIMG;
@@ -74,11 +75,7 @@ public class Mariosweeper {
     static String EXPERT = "Expert";
 
     public static void main(String[] args) {
-        try {
-            Mariosweeper minesweeper = new Mariosweeper();
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(Mariosweeper.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Mariosweeper minesweeper = new Mariosweeper();
     }
 
     void setMode(String mode) {
@@ -620,15 +617,28 @@ public class Mariosweeper {
             new Sound("/resources/sounds/athletic.wav"),
             new Sound("/resources/sounds/flowergarden.wav"),
             new Sound("/resources/sounds/fever.wav"),
-            new Sound("/resources/sounds/Lullaby.wav"),
+            new Sound("/resources/sounds/lullaby.wav"),
             new Sound("/resources/sounds/underwater.wav"),
             new Sound("/resources/sounds/overworld.wav")
         };
     }
 
-    public Mariosweeper() throws URISyntaxException {
+    public Mariosweeper() {
         // Setting constants
-        scoreHandler = new HighscoreHandler(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() + "/resources/highscores.txt");
+        try {
+            scoreHandler = new HighscoreHandler("highscores.txt");
+        } catch (FileNotFoundException ex) {
+            try {
+                scoreHandler = new HighscoreHandler(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath().replace("/dist/Mariosweeper.jar", "/highscores.txt") );
+                ex.printStackTrace();
+            } catch (URISyntaxException ex1) {
+                Logger.getLogger(Mariosweeper.class.getName()).log(Level.SEVERE, null, ex1);
+            } catch (IOException ex1) {
+                Logger.getLogger(Mariosweeper.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
         rows = 8;
         cols = 8;
