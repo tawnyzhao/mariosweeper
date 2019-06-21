@@ -43,30 +43,81 @@ public class MinesweeperButtonHandler extends MouseAdapter {
 
     @Override
     public void mouseExited(MouseEvent me) {
-        MinesweeperButton button = (MinesweeperButton) (me.getSource());
-        ms.dehighlightAll();    
+        super.mouseExited(me);
     }
 
     @Override
     public void mouseEntered(MouseEvent me) {
         MinesweeperButton button = (MinesweeperButton) (me.getSource());
         ms.dehighlightAll();
-        if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me) && button.isExposed()) {
+        if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
             ms.highlightNear(button.getCoordinates());
+        } else if (SwingUtilities.isLeftMouseButton(me) && !button.isExposed()) {
+            button.setIcon(ms.ACTIVEIMG);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent me) {
         MinesweeperButton button = (MinesweeperButton) (me.getSource());
-        if (!ms.isPlaying) {
-            ms.isPlaying = true;
-            ms.buildGrid(button.getCoordinates());
-            ms.setButtonValues();
-        }
-        if (!button.isExposed()) {
-            if (me.isMetaDown()) {
+        System.out.println("left"+isLeftPressed);
+        System.out.println("right"+isRightPressed);
+        
+        
+        if (button.isExposed()) {
+            if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
+                ms.clearNear(button.getCoordinates());
+                isLeftPressed = false;
+                isRightPressed = false;
+            }
+        } else {
+            if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
+                isLeftPressed = false;
+                isRightPressed = false;
+            } else if (isLeftPressed) {
+                if (!ms.isPlaying) {
+                    ms.isPlaying = true;
+                    ms.buildGrid(button.getCoordinates());
+                    ms.setButtonValues();
+                }
+                if (!button.isFlagged()) {
+                    if (button.getValue() == -1) {
+                        ms.endGame();
+                        button.setBackground(Color.RED);
+                    } else if (button.getValue() == 0) {
+                        ms.exposeEmpty(button.getCoordinates());
+                    } else {
+                        ms.tilesExposed++;
+                        ms.winGame();
+                        button.expose();
+                    }
+                }
+            } else if (isRightPressed) {
                 button.flag();
+                System.out.println("not fixed");
+                if (button.isFlagged()) {
+                    ms.tilesFlagged++;
+                    button.setIcon(ms.FLAGIMG);
+                } else {
+                    ms.tilesFlagged--;
+                    button.setIcon(ms.TILEIMG);
+                }
+                ms.minesLabel.setText(Integer.toString(ms.NUM_MINES - ms.tilesFlagged));
+            }
+            
+
+        }
+        ms.dehighlightAll();
+        isLeftPressed = false;
+        isRightPressed = false;
+        /**
+        if (!button.isExposed()) {
+            if (isLeftPressed && isRightPressed) {
+                ms.highlightNear(button.getCoordinates());
+                System.out.println("UhOh");
+            } else if (SwingUtilities.isRightMouseButton(me)) {
+                button.flag();
+                System.out.println("not fixed");
                 if (button.isFlagged()) {
                     ms.tilesFlagged++;
                     button.setIcon(ms.FLAGIMG);
@@ -76,10 +127,10 @@ public class MinesweeperButtonHandler extends MouseAdapter {
                 }
                 ms.minesLabel.setText(Integer.toString(ms.NUM_MINES - ms.tilesFlagged));
             } else if (!button.isFlagged()) {
+                System.out.println("help");
                 if (button.getValue() == -1) {
                     ms.endGame();
                     button.setBackground(Color.RED);
-
                     // Code to end game
                 } else if (button.getValue() == 0) {
                     ms.exposeEmpty(button.getCoordinates());
@@ -90,28 +141,34 @@ public class MinesweeperButtonHandler extends MouseAdapter {
                 }
             }
         } else {
-            if (isLeftPressed && isRightPressed && button.getValue() > 0) {
+            if (isLeftPressed && isRightPressed && button.getValue() > 0 && button.isExposed()) {
                 isLeftPressed = false;
                 isRightPressed = false;
                 ms.clearNear(button.getCoordinates());
+            } else if (isLeftPressed && isRightPressed && !button.isExposed()) {
+                isLeftPressed = false;
+                isRightPressed = false;
+                ms.highlightNear(button.getCoordinates());
             }
         }
         ms.dehighlightAll();
+        */
     }
     @Override
     public void mousePressed(MouseEvent me) {
+        MinesweeperButton button = (MinesweeperButton) (me.getSource());
+
         if (SwingUtilities.isLeftMouseButton(me)) {
             isLeftPressed = true;
         }
         if (SwingUtilities.isRightMouseButton(me)) {
             isRightPressed = true;
         }
-        if (me.getSource() instanceof MinesweeperButton) {
-            MinesweeperButton button = (MinesweeperButton) (me.getSource());
-            if (isLeftPressed && isRightPressed && button.isExposed()) {
-                ms.highlightNear(button.getCoordinates());
-            }
+        
+        if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
+            ms.highlightNear(button.getCoordinates());
         }
+        
     }
 
     @Override

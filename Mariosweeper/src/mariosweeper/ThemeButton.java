@@ -5,6 +5,10 @@ import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
+/**JButton to control the tileset of the game
+ * 
+ * @author Tony Zhao
+ */
 public class ThemeButton extends JButton {
     ImageIcon icon;
     ImageIcon altIcon;

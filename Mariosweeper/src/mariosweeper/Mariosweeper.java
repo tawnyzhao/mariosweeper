@@ -30,6 +30,8 @@ public class Mariosweeper {
     int totalTiles;
     int tilesExposed;
     int tilesFlagged;
+    boolean isPlaying;
+
     String mode;
 
     private int tileSize = 35;
@@ -41,20 +43,20 @@ public class Mariosweeper {
     private JPanel gridPanel;
     private JPanel settingPanel;
     JPanel scorePanel;
+    boolean isScorePanelVisible;
     JPanel achievementPanel;
+    boolean isAchievementPanelVisible;
 
     private MenuButton[] menuButtons;
     private MenuButton restartButton;
     private MenuButton toggleAchievementPanelButton;
     private MenuButton toggleScorePanelButton;
-
     private MinesweeperButton[][] buttons;
     private JLabel timerLabel;
     private JLabel[] scoreLabels;
     private Timer timer;
     private int time;
     JLabel minesLabel;
-    boolean isPlaying;
     
     ImageIcon FLAGIMG;
     ImageIcon BOMBIMG;
@@ -406,6 +408,7 @@ public class Mariosweeper {
         scorePanelConstraints.insets = new Insets(0, 5, 0, 5);
         scorePanelConstraints.anchor = GridBagConstraints.LINE_END;
         mainPanel.add(scorePanel, scorePanelConstraints);
+        scorePanel.setVisible(isScorePanelVisible);
         frame.pack();
     }
 
@@ -549,7 +552,10 @@ public class Mariosweeper {
         restartButton.setRolloverEnabled(false);
 
         toggleAchievementPanelButton = new MenuButton("<");
+        isAchievementPanelVisible = true;
         toggleScorePanelButton = new MenuButton(">");
+        isScorePanelVisible = true;
+        
         toggleAchievementPanelButton.addMouseListener(new MenuButtonHandler(this));
         toggleScorePanelButton.addMouseListener(new MenuButtonHandler(this));
         infoPanel.add(toggleAchievementPanelButton);

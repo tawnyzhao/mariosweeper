@@ -1,7 +1,10 @@
 package mariosweeper;
 import javax.swing.*;
 import java.awt.*;
-
+/** General JButton for difficulty, restarting and opening and closing panels
+ * 
+ * @author Tony Zhao
+ */
 public class MenuButton extends JButton {
     private static final long serialVersionUID = -1L;
     private Dimension dimension;

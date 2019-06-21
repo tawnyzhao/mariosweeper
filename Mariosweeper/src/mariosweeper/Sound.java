@@ -31,10 +31,6 @@ public class Sound {
         }
     }
 
-    public Sound() {
-        this("sounds/pop.wav");
-    }
-
     /**
      * Plays background music (loops infinitely)
      */

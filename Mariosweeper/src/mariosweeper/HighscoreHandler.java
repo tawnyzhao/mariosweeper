@@ -12,13 +12,22 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.regex.*;
 
+/** Handles reading and writing of high scores to a file
+ * 
+ * @author Tony Zhao
+ */
 public class HighscoreHandler {
     private BufferedReader reader;
     private BufferedWriter writer;
     private Date date;
     private DateFormat dateFormat;
     private String fileLocation;
-
+    /** Creates a HighscoreHandler
+     * 
+     * @param fileLocation location of highscores.txt 
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public HighscoreHandler(String fileLocation) throws FileNotFoundException, IOException {
         this.fileLocation = fileLocation;
         reader = new BufferedReader(new FileReader(fileLocation));
@@ -26,7 +35,12 @@ public class HighscoreHandler {
         
         dateFormat = new SimpleDateFormat("yyyy/MM/dd");
     }
-
+    
+    /** Adds a new entry to the high score file
+     * 
+     * @param time clear time
+     * @param mode difficulty
+     */
     void addHighscore(int time, String mode) {
         date = new Date();
         
@@ -41,7 +55,11 @@ public class HighscoreHandler {
 
         System.out.println("Highscore added!");
     }
-    
+    /** Gets the 7 most recent games played in a category
+     * 
+     * @param category 
+     * @return ArrayList<String> the 7 most recent games
+     */
     ArrayList<String> getHighscores(String category) {
         ArrayList<String> result = new ArrayList<>();
         String currentLine;
@@ -61,7 +79,11 @@ public class HighscoreHandler {
         }
         return result;
     }
-
+    /** Gets the average time of the last five clears
+     * 
+     * @param category
+     * @return String the average time of the last five clears
+     */
     String getAverageTime(String category) {
         double result = 0;
         Pattern scorePattern = Pattern.compile("(?<=| )\\d+");
@@ -90,7 +112,10 @@ public class HighscoreHandler {
             return Double.toString(result) + " ao" + Integer.toString(scores.size());
         }
     }
-
+    /** Gets the lowest times of each category
+     * 
+     * @return ArrayList of the lowest times
+     */
     ArrayList<String> getTopScores() {
         ArrayList<String> result = new ArrayList<>();
 

@@ -34,10 +34,12 @@ public class MenuButtonHandler extends MouseAdapter {
         } else if (button.getType().equals("Restart"))   {
             ms.reset(ms.rows,ms.cols,ms.NUM_MINES);
         } else if (button.getType().equals(">")) {
-            ms.scorePanel.setVisible(!ms.scorePanel.isVisible());
+            ms.isScorePanelVisible = !ms.isScorePanelVisible;
+            ms.scorePanel.setVisible(ms.isScorePanelVisible);
             ms.frame.pack();
         } else if (button.getType().equals("<")) {
-            ms.achievementPanel.setVisible(!ms.achievementPanel.isVisible());
+            ms.isAchievementPanelVisible = !ms.isAchievementPanelVisible;
+            ms.achievementPanel.setVisible(ms.isAchievementPanelVisible);
             ms.frame.pack();
         }    
     }
