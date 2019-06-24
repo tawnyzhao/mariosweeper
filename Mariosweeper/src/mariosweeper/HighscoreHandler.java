@@ -55,10 +55,10 @@ public class HighscoreHandler {
 
         System.out.println("Highscore added!");
     }
-    /** Gets the 7 most recent games played in a category
+    /** Gets the most recent games played in a category
      * 
      * @param category 
-     * @return ArrayList<String> the 7 most recent games
+     * @return ArrayList<String>
      */
     ArrayList<String> getHighscores(String category) {
         ArrayList<String> result = new ArrayList<>();
@@ -74,9 +74,7 @@ public class HighscoreHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (result.size() > 7) {
-            result = new ArrayList<>(result.subList(result.size()-7,result.size()-1));
-        }
+        
         return result;
     }
     /** Gets the average time of the last five clears

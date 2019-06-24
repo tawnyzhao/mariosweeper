@@ -6,6 +6,7 @@
 package mariosweeper;
 
 import java.awt.*;
+import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,16 +25,27 @@ public class MinesweeperButton extends JButton {
     private boolean exposed;
     private Font font;
     private boolean flagged;
+    private HashMap<Integer, Color> colorMap;
     
     public MinesweeperButton(int size, MinesweeperButtonHandler mHandler){
         coordinates = new int[2];
         dimension = new Dimension(size,size);
         setPreferredSize(dimension);
         exposed = false;
-        font = new Font(Font.DIALOG, Font.BOLD, 20);
+        font = new Font(Font.DIALOG, Font.BOLD, 26);
         flagged = false;
         setFocusable(false);
         addMouseListener(mHandler);
+        colorMap = new HashMap<Integer, Color>(){{
+            put(1, new Color(42, 42, 255));
+            put(2, new Color(0, 128, 0));
+            put(3, new Color(255, 0, 0));
+            put(4, new Color(42, 42, 148));
+            put(5, new Color(128, 0, 0)); 
+            put(6, new Color(42, 148, 148)); 
+            put(7, new Color(0, 0, 0)); 
+            put(8, new Color(128, 128, 128));            
+        }};
     }
 
     void flag() {
@@ -68,6 +80,7 @@ public class MinesweeperButton extends JButton {
         if (value != 0 && value != -1) {
             this.setText(String.valueOf(value));
             this.setIcon(null);
+            setForeground(colorMap.get(value));
             setBorder(BorderFactory.createLineBorder(Color.black));
 
         }
