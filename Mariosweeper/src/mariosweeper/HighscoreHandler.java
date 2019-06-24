@@ -120,31 +120,31 @@ public class HighscoreHandler {
         String currentLine;
         Pattern scorePattern = Pattern.compile("(?<=| )\\d+");
         Matcher scoreMatcher;
-        ArrayList<Integer> beginnerArray = new ArrayList<>();
-        ArrayList<Integer> intermediateArray = new ArrayList<>();
-        ArrayList<Integer> expertArray = new ArrayList<>();
+        ArrayList<Integer> beginnerArrayLow = new ArrayList<>();
+        ArrayList<Integer> intermediateArrayLow = new ArrayList<>();
+        ArrayList<Integer> expertArrayLow = new ArrayList<>();
 
         try {
             while ((currentLine = reader.readLine()) != null) { // Reads until end of file
                 scoreMatcher = scorePattern.matcher(currentLine);
                 if (scoreMatcher.find()) {
                     if (currentLine.matches("^Beginner.*")){
-                        beginnerArray.add(Integer.parseInt(scoreMatcher.group()));
+                        beginnerArrayLow.add(Integer.parseInt(scoreMatcher.group()));
                     } else if (currentLine.matches("^Intermediate.*")) {
-                        intermediateArray.add(Integer.parseInt(scoreMatcher.group()));
+                        intermediateArrayLow.add(Integer.parseInt(scoreMatcher.group()));
                     } else if (currentLine.matches("^Expert.*")) {
-                        expertArray.add(Integer.parseInt(scoreMatcher.group()));
+                        expertArrayLow.add(Integer.parseInt(scoreMatcher.group()));
                     }
                 }
             }
-            if (beginnerArray.size() > 0) {
-                result.add("Beginner | " + Integer.toString(Collections.min(beginnerArray)));
+            if (beginnerArrayLow.size() > 0) {
+                result.add("Beginner | " + Integer.toString(Collections.min(beginnerArrayLow)));
             }
-            if (intermediateArray.size() > 0) {
-                result.add("Intermediate | " +Integer.toString(Collections.min(intermediateArray)));
+            if (intermediateArrayLow.size() > 0) {
+                result.add("Intermediate | " +Integer.toString(Collections.min(intermediateArrayLow)));
             }
-            if (expertArray.size() > 0) {
-                result.add("Expert | " +Integer.toString(Collections.min(expertArray)));
+            if (expertArrayLow.size() > 0) {
+                result.add("Expert | " +Integer.toString(Collections.min(expertArrayLow)));
             }
             reader.close();
             reader = new BufferedReader(new FileReader(fileLocation));

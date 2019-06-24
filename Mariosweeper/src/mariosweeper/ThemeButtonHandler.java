@@ -9,7 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 
-/** 
+/** Theme button handler
  *
  * @author Tony Zhao
  */

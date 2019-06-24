@@ -22,7 +22,7 @@ public class SoundButtonHandler extends MouseAdapter {
     public void mouseReleased(MouseEvent me) {
     SoundButton button = (SoundButton) (me.getSource());
         ms.currentSound.stop();
-        ms.currentSound = button.getSound();
+        ms.setCurrentSound(button.getSound());
         ms.currentSound.restart();
         ms.currentSound.playMusic();
     }    

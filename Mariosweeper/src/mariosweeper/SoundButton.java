@@ -27,6 +27,12 @@ public class SoundButton extends JButton {
         d.width = Integer.MAX_VALUE;
         return d;
     }
+    
+    /**
+     * Gets sound associated with 
+     * 
+     * @return 
+     */
     Sound getSound() {
         return sound;
     }

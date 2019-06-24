@@ -22,25 +22,21 @@ public class MenuButtonHandler extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent me) {
         MenuButton button = (MenuButton) (me.getSource());
-        if (button.getType().equals("Beginner")) {
-            ms.setMode(ms.BEGINNER);
+        if (button.getType().equals(Mariosweeper.BEGINNER)) {
+            ms.setMode(Mariosweeper.BEGINNER);
             ms.reset(8, 8, 10);
-        } else if (button.getType().equals("Intermediate")) {
-            ms.setMode(ms.INTERMEDIATE);
+        } else if (button.getType().equals(Mariosweeper.INTERMEDIATE)) {
+            ms.setMode(Mariosweeper.INTERMEDIATE);
             ms.reset(16, 16, 40);
-        } else if (button.getType().equals("Expert")) {
-            ms.setMode(ms.EXPERT);
+        } else if (button.getType().equals(Mariosweeper.EXPERT)) {
+            ms.setMode(Mariosweeper.EXPERT);
             ms.reset(16,30,99);
         } else if (button.getType().equals("Restart"))   {
             ms.reset(ms.rows,ms.cols,ms.NUM_MINES);
         } else if (button.getType().equals(">")) {
-            ms.isScorePanelVisible = !ms.isScorePanelVisible;
-            ms.scorePanelWrapper.setVisible(ms.isScorePanelVisible);
-            ms.frame.pack();
+            ms.toggleScorePanel();
         } else if (button.getType().equals("<")) {
-            ms.isAchievementPanelVisible = !ms.isAchievementPanelVisible;
-            ms.achievementPanel.setVisible(ms.isAchievementPanelVisible);
-            ms.frame.pack();
+            ms.toggleAchievementPanel();
         }    
     }
 }

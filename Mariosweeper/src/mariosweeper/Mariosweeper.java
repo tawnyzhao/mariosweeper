@@ -83,6 +83,7 @@ public class Mariosweeper {
     static String BEGINNER = "Beginner";
     static String INTERMEDIATE = "Intermediate";
     static String EXPERT = "Expert";
+    static int SCORE_PANEL_WIDTH = 170;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable(){
@@ -106,6 +107,10 @@ public class Mariosweeper {
      */
     String getMode() {
         return mode;
+    }
+    
+    void setCurrentSound(Sound newSound) {
+        currentSound = newSound;
     }
 
     /**
@@ -258,7 +263,23 @@ public class Mariosweeper {
             }
         }
     }
-
+    /** Toggle visibility of achievement panel
+     * 
+     */
+    void toggleAchievementPanel() {
+        isAchievementPanelVisible = !isAchievementPanelVisible;
+        achievementPanel.setVisible(isAchievementPanelVisible);
+        frame.pack();
+    }
+    /** Toggle visibility of score panel
+     * 
+     */
+    void toggleScorePanel() {
+        isScorePanelVisible = !isScorePanelVisible;
+        scorePanelWrapper.setVisible(isScorePanelVisible);
+        frame.pack();
+    }
+    
     /**
      * Function to end game after hitting a mine.
      */
@@ -632,7 +653,7 @@ public class Mariosweeper {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(mainPanel);
         frame.pack();
-        scorePanelWrapper.getViewport().setPreferredSize(new Dimension(170, gridPanel.getHeight()));
+        scorePanelWrapper.getViewport().setPreferredSize(new Dimension(SCORE_PANEL_WIDTH, gridPanel.getHeight()));
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null); // Starts Frame in Center
@@ -659,10 +680,10 @@ public class Mariosweeper {
     public Mariosweeper() {
         // Setting constants
         try { //Allows files to be run from both .jar and inside IDE.
-            scoreHandler = new HighscoreHandler("highscores.txt");
+            scoreHandler = new HighscoreHandler("highscores.sav");
         } catch (FileNotFoundException ex) {
             try {
-                scoreHandler = new HighscoreHandler(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath().replace("/dist/Mariosweeper.jar", "/highscores.txt") );
+                scoreHandler = new HighscoreHandler(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath().replace("/dist/Mariosweeper.jar", "/highscores.sav") );
                 ex.printStackTrace();
             } catch (URISyntaxException ex1) {
                 ex1.printStackTrace();

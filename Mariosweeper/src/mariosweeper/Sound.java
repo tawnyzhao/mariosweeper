@@ -54,5 +54,4 @@ public class Sound {
     void restart() {
         clip.setMicrosecondPosition(0);
     }
-
 }
