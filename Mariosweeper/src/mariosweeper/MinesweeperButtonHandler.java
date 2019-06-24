@@ -78,13 +78,12 @@ public class MinesweeperButtonHandler extends MouseAdapter {
                 isMiddlePressed = false;
             } else if (isLeftPressed) {
                  isLeftPressed = false;
-
-                if (!ms.isPlaying) {
-                    ms.isPlaying = true;
-                    ms.buildGrid(button.getCoordinates());
-                    ms.setButtonValues();
-                }
                 if (!button.isFlagged()) {
+                    if (!ms.isPlaying) {
+                        ms.isPlaying = true;
+                        ms.buildGrid(button.getCoordinates());
+                        ms.setButtonValues();
+                    }
                     if (button.getValue() == -1) {
                         ms.endGame();
                         button.setBackground(Color.RED);
