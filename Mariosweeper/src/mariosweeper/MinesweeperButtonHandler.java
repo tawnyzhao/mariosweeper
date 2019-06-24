@@ -51,10 +51,8 @@ public class MinesweeperButtonHandler extends MouseAdapter {
     public void mouseEntered(MouseEvent me) {
         MinesweeperButton button = (MinesweeperButton) (me.getComponent());
         ms.dehighlightAll();
-        if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
+        if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me) || SwingUtilities.isMiddleMouseButton(me)) {
             ms.highlightNear(button.getCoordinates());
-        } else if (SwingUtilities.isLeftMouseButton(me) && !button.isExposed()) {
-            button.setIcon(ms.ACTIVEIMG);
         }
     }
 
@@ -68,11 +66,16 @@ public class MinesweeperButtonHandler extends MouseAdapter {
                 ms.clearNear(button.getCoordinates());
                 isLeftPressed = false;
                 isRightPressed = false;
+            } else if (isMiddlePressed) {
+                ms.clearNear(button.getCoordinates());
+                isMiddlePressed = false;
             }
         } else {
             if (isLeftPressed && isRightPressed) {
                 isLeftPressed = false;
                 isRightPressed = false;
+            } else if (isMiddlePressed) {
+                isMiddlePressed = false;
             } else if (isLeftPressed) {
                  isLeftPressed = false;
 
@@ -165,9 +168,9 @@ public class MinesweeperButtonHandler extends MouseAdapter {
         }
         
         if (SwingUtilities.isMiddleMouseButton(me)) {
-            
+            isMiddlePressed = true;
         }
-        if (isLeftPressed && isRightPressed) {
+        if (isLeftPressed && isRightPressed || isMiddlePressed) {
             ms.highlightNear(button.getCoordinates());
         }
         
