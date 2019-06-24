@@ -35,7 +35,7 @@ public class MenuButtonHandler extends MouseAdapter {
             ms.reset(ms.rows,ms.cols,ms.NUM_MINES);
         } else if (button.getType().equals(">")) {
             ms.isScorePanelVisible = !ms.isScorePanelVisible;
-            ms.scorePanel.setVisible(ms.isScorePanelVisible);
+            ms.scorePanelWrapper.setVisible(ms.isScorePanelVisible);
             ms.frame.pack();
         } else if (button.getType().equals("<")) {
             ms.isAchievementPanelVisible = !ms.isAchievementPanelVisible;

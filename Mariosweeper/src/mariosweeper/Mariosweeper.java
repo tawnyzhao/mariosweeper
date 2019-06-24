@@ -12,14 +12,23 @@ import java.util.logging.Logger;
 import java.io.*;
 
 /**
- * Programming 12 Minesweeper Project Last edited: 2019-06-02
- *
+ * Mariosweeper
+ * Programming 12 Minesweeper Project 
+ * Last edited: 2019-06-24
+ * 
  * @author Tony Zhao
- * @version v0.2
+ * @version v1.0
  *
- * TODO: Add sound effects for clear
+ * Issues:
+ * - Double clicking uses original button, nmeaning 1.5 chording is impossible
+ * - Closing panes moves entire JFrame
  *
- * Extra Features: Double clicking Custom cursor Detailed score tracking
+ * Extra Features: 
+ * - Double clicking C
+ * - Custom cursor 
+ * - Detailed score tracking
+ * - Music Panel
+ * - Faithful recreation of WINMINE mechanics
  */
 public class Mariosweeper {
 
@@ -31,7 +40,6 @@ public class Mariosweeper {
     int tilesExposed;
     int tilesFlagged;
     boolean isPlaying;
-
     String mode;
 
     private int tileSize = 35;
@@ -77,13 +85,25 @@ public class Mariosweeper {
     static String EXPERT = "Expert";
 
     public static void main(String[] args) {
-        Mariosweeper minesweeper = new Mariosweeper();
+        SwingUtilities.invokeLater(new Runnable(){
+            @Override
+            public void run() {
+                Mariosweeper minesweeper = new Mariosweeper();
+            }
+        });
     }
-
+    JScrollPane scorePanelWrapper;
+    /** Sets difficulty.
+     * 
+     * @param mode 
+     */
     void setMode(String mode) {
         this.mode = mode;
     }
-
+    /** Gets current difficulty
+     * 
+     * @return 
+     */
     String getMode() {
         return mode;
     }
@@ -239,10 +259,6 @@ public class Mariosweeper {
         }
     }
 
-    void toggleAchievementPanel() {
-
-    }
-
     /**
      * Function to end game after hitting a mine.
      */
@@ -378,10 +394,11 @@ public class Mariosweeper {
     }
 
     /**
-     * Updates the score panel, refreshing highscores
+     * Updates the score panel, refreshing highscores.
      */
-    void updateHighscores() {
-        mainPanel.remove(scorePanel);
+    void updateHighscores() { 
+        mainPanel.remove(scorePanelWrapper); 
+        
         scorePanel = new JPanel();
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.PAGE_AXIS));
         scorePanel.add(new JLabel("Hall of Fame"));
@@ -407,9 +424,12 @@ public class Mariosweeper {
         scorePanelConstraints.gridy = 1;
         scorePanelConstraints.insets = new Insets(0, 5, 0, 5);
         scorePanelConstraints.anchor = GridBagConstraints.LINE_END;
-        mainPanel.add(scorePanel, scorePanelConstraints);
-        scorePanel.setVisible(isScorePanelVisible);
+        scorePanelWrapper = new JScrollPane(scorePanel); // Rebinds the scroll pane to the score panel
+        mainPanel.add(scorePanelWrapper, scorePanelConstraints);
+        scorePanelWrapper.getViewport().setPreferredSize(new Dimension(170, gridPanel.getHeight()));
+        scorePanelWrapper.setVisible(isScorePanelVisible);
         frame.pack();
+        
     }
 
     /**
@@ -456,10 +476,10 @@ public class Mariosweeper {
         gridPanelConstraints.gridy = 1;
         gridPanelConstraints.anchor = GridBagConstraints.CENTER;
         mainPanel.add(gridPanel, gridPanelConstraints);
-        updateHighscores();
-
+        
         timer.start();
         frame.pack();
+        updateHighscores(); //after packing as high score panel needs height of gridPanel
         frame.setLocationRelativeTo(null); // Starts Frame in Center
     }
 
@@ -490,6 +510,7 @@ public class Mariosweeper {
         settingPanel.setLayout(new FlowLayout());
         scorePanel = new JPanel();
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.PAGE_AXIS));
+        scorePanelWrapper = new JScrollPane(scorePanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         achievementPanel = new JPanel();
         achievementPanel.setLayout(new BoxLayout(achievementPanel, BoxLayout.PAGE_AXIS));
 
@@ -520,7 +541,7 @@ public class Mariosweeper {
         mainPanel.add(infoPanel, infoPanelConstraints);
         mainPanel.add(gridPanel, gridPanelConstraints);
         mainPanel.add(settingPanel, settingPanelConstraints);
-        mainPanel.add(scorePanel, scorePanelConstraints);
+        mainPanel.add(scorePanelWrapper, scorePanelConstraints);
         mainPanel.add(achievementPanel, achievementPanelConstraints);
 
         //Setting grid panel
@@ -602,7 +623,7 @@ public class Mariosweeper {
         achievementPanel.add(new SoundButton("Lullaby", sounds[3], new SoundButtonHandler(this)));
         achievementPanel.add(new SoundButton("Underwater", sounds[4], new SoundButtonHandler(this)));
         achievementPanel.add(new SoundButton("Overworld", sounds[5], new SoundButtonHandler(this)));
-        achievementPanel.add(new JLabel(" "));
+        achievementPanel.add(new JLabel(" ")); //Spacing
         achievementPanel.add(new JLabel("Change Flavor"));
         achievementPanel.add(new ThemeButton(BOMBIMG, FLOWERIMG, new ThemeButtonHandler(this)));
 
@@ -611,13 +632,19 @@ public class Mariosweeper {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(mainPanel);
         frame.pack();
+        scorePanelWrapper.getViewport().setPreferredSize(new Dimension(170, gridPanel.getHeight()));
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null); // Starts Frame in Center
         frame.setIconImage(ACTIVEIMG.getImage());
         frame.setCursor(cursor);
-    }
+        frame.pack();
+        frame.setLocationRelativeTo(null); // Starts Frame in Center
 
+    }
+    /** Loads sounds
+     * 
+     */
     void initializeSounds() {
         sounds = new Sound[]{
             new Sound("/resources/sounds/athletic.wav"),
@@ -631,16 +658,16 @@ public class Mariosweeper {
 
     public Mariosweeper() {
         // Setting constants
-        try {
+        try { //Allows files to be run from both .jar and inside IDE.
             scoreHandler = new HighscoreHandler("highscores.txt");
         } catch (FileNotFoundException ex) {
             try {
                 scoreHandler = new HighscoreHandler(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath().replace("/dist/Mariosweeper.jar", "/highscores.txt") );
                 ex.printStackTrace();
             } catch (URISyntaxException ex1) {
-                Logger.getLogger(Mariosweeper.class.getName()).log(Level.SEVERE, null, ex1);
+                ex1.printStackTrace();
             } catch (IOException ex1) {
-                Logger.getLogger(Mariosweeper.class.getName()).log(Level.SEVERE, null, ex1);
+                ex1.printStackTrace();
             }
         } catch (IOException ex) {
             ex.printStackTrace();

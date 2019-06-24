@@ -11,7 +11,12 @@ public class MenuButton extends JButton {
     private Font font;
     private String type;
 
-
+    /** Constructor for text button with dimensions
+     * 
+     * @param type
+     * @param x
+     * @param y 
+     */
     public MenuButton(String type, int x, int y) {
         super(type);
         this.type = type;
@@ -22,7 +27,10 @@ public class MenuButton extends JButton {
         setFocusPainted(false);
         setContentAreaFilled(false);
     }
-
+    /** Constructor for button with text
+     * 
+     * @param type 
+     */
     public MenuButton(String type) {
         super(type);
         this.type = type;
@@ -31,7 +39,10 @@ public class MenuButton extends JButton {
         setFocusPainted(false);
         setContentAreaFilled(false);
     }
-
+    /** Constructor for button with image
+     * 
+     * @param image 
+     */
     public MenuButton (ImageIcon image) {
         super(image);
         this.type = image.toString();

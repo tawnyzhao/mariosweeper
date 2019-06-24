@@ -48,7 +48,7 @@ public class HighscoreHandler {
             writer.write(mode + " | " + Integer.toString(time) + " | " + dateFormat.format(date));
             writer.newLine();
             writer.close();
-            writer = new BufferedWriter(new FileWriter(fileLocation, true));
+            writer = new BufferedWriter(new FileWriter(fileLocation, true)); //Reopens file
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,7 +65,7 @@ public class HighscoreHandler {
         String currentLine;
         try {
             while ((currentLine = reader.readLine()) != null) { // Reads until end of file
-                if (currentLine.matches("^" + category + ".*")) {
+                if (currentLine.matches("^" + category + ".*")) { //Checks category matches entry
                     result.add(currentLine);
                 }
             }
@@ -74,9 +74,7 @@ public class HighscoreHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (result.size() > 7) {
-            result = new ArrayList<>(result.subList(result.size()-7,result.size()-1));
-        }
+        
         return result;
     }
     /** Gets the average time of the last five clears
@@ -86,7 +84,7 @@ public class HighscoreHandler {
      */
     String getAverageTime(String category) {
         double result = 0;
-        Pattern scorePattern = Pattern.compile("(?<=| )\\d+");
+        Pattern scorePattern = Pattern.compile("(?<=| )\\d+"); //Matches first number after |
         Matcher scoreMatcher;
         
         ArrayList<String> scores = getHighscores(category);
@@ -156,7 +154,12 @@ public class HighscoreHandler {
         }
         return result;
     }
-    
+    /** Allows to get specific number of highscores 
+     * 
+     * @param category
+     * @param numberOfEntries
+     * @return 
+     */
     ArrayList<String> getHighscores(String category, int numberOfEntries){
         ArrayList<String> result = getHighscores(category);
         return new ArrayList<String>(result.subList(0, numberOfEntries - 1));

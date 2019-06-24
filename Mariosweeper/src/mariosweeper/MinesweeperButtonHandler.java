@@ -79,9 +79,9 @@ public class MinesweeperButtonHandler extends MouseAdapter {
             } else if (isLeftPressed) {
                  isLeftPressed = false;
                 if (!button.isFlagged()) {
-                    if (!ms.isPlaying) {
+                    if (!ms.isPlaying) { //Checks to see if game started
                         ms.isPlaying = true;
-                        ms.buildGrid(button.getCoordinates());
+                        ms.buildGrid(button.getCoordinates()); //Ensures first click is not a mine
                         ms.setButtonValues();
                     }
                     if (button.getValue() == -1) {
@@ -152,8 +152,8 @@ public class MinesweeperButtonHandler extends MouseAdapter {
             isLeftPressed = true;
         }
         if (SwingUtilities.isRightMouseButton(me)) {
-            isRightPressed = true;
-            if (!isLeftPressed && !button.isExposed()) { 
+            isRightPressed = true; 
+            if (!isLeftPressed && !button.isExposed()) { //Flags mines
                 button.flag();
                 if (button.isFlagged()) {
                     ms.tilesFlagged++;

@@ -15,7 +15,10 @@ import javax.swing.JButton;
  *
  * @author Tony Zhao
  */
-
+/** Button for the mines in game
+ * 
+ * @author Tony Zhao
+ */
 public class MinesweeperButton extends JButton {
     private static final long serialVersionUID = 1L;
 
@@ -34,9 +37,9 @@ public class MinesweeperButton extends JButton {
         exposed = false;
         font = new Font(Font.DIALOG, Font.BOLD, 26);
         flagged = false;
-        setFocusable(false);
+        setFocusable(false); //Stops highlighting after click
         addMouseListener(mHandler);
-        colorMap = new HashMap<Integer, Color>(){{
+        colorMap = new HashMap<Integer, Color>(){{ //Colors from original game
             put(1, new Color(42, 42, 255));
             put(2, new Color(0, 128, 0));
             put(3, new Color(255, 0, 0));

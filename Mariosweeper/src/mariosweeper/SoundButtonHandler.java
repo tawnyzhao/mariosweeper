@@ -8,7 +8,7 @@ package mariosweeper;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
+/** Mouse handler for sound button
  *
  * @author Tony Zhao
  */

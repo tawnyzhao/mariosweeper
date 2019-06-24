@@ -3,9 +3,12 @@ package mariosweeper;
 import java.awt.Dimension;
 
 import javax.swing.*;
-
+/** Button to set in game sound
+ * 
+ * @author Tony Zhao
+ */
 public class SoundButton extends JButton {
-    Sound sound;
+    Sound sound; //Sound linked with button
     
     public SoundButton(String text, Sound sound, SoundButtonHandler mHandler) {
         super(text);
