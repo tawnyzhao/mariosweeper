@@ -19,6 +19,7 @@ public class MinesweeperButtonHandler extends MouseAdapter {
     Mariosweeper ms;
     boolean isLeftPressed;
     boolean isRightPressed;
+    boolean isMiddlePressed;
     
     public MinesweeperButtonHandler (Mariosweeper minesweeper) {
         ms = minesweeper;
@@ -48,7 +49,7 @@ public class MinesweeperButtonHandler extends MouseAdapter {
 
     @Override
     public void mouseEntered(MouseEvent me) {
-        MinesweeperButton button = (MinesweeperButton) (me.getSource());
+        MinesweeperButton button = (MinesweeperButton) (me.getComponent());
         ms.dehighlightAll();
         if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
             ms.highlightNear(button.getCoordinates());
@@ -59,22 +60,22 @@ public class MinesweeperButtonHandler extends MouseAdapter {
 
     @Override
     public void mouseReleased(MouseEvent me) {
-        MinesweeperButton button = (MinesweeperButton) (me.getSource());
-        System.out.println("left"+isLeftPressed);
-        System.out.println("right"+isRightPressed);
+        MinesweeperButton button = (MinesweeperButton) (me.getComponent());
         
         
         if (button.isExposed()) {
-            if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
+            if (isRightPressed && isLeftPressed) {
                 ms.clearNear(button.getCoordinates());
                 isLeftPressed = false;
                 isRightPressed = false;
             }
         } else {
-            if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
+            if (isLeftPressed && isRightPressed) {
                 isLeftPressed = false;
                 isRightPressed = false;
             } else if (isLeftPressed) {
+                 isLeftPressed = false;
+
                 if (!ms.isPlaying) {
                     ms.isPlaying = true;
                     ms.buildGrid(button.getCoordinates());
@@ -93,23 +94,10 @@ public class MinesweeperButtonHandler extends MouseAdapter {
                     }
                 }
             } else if (isRightPressed) {
-                button.flag();
-                System.out.println("not fixed");
-                if (button.isFlagged()) {
-                    ms.tilesFlagged++;
-                    button.setIcon(ms.FLAGIMG);
-                } else {
-                    ms.tilesFlagged--;
-                    button.setIcon(ms.TILEIMG);
-                }
-                ms.minesLabel.setText(Integer.toString(ms.NUM_MINES - ms.tilesFlagged));
+                isRightPressed = false;
             }
-            
-
         }
         ms.dehighlightAll();
-        isLeftPressed = false;
-        isRightPressed = false;
         /**
         if (!button.isExposed()) {
             if (isLeftPressed && isRightPressed) {
@@ -156,16 +144,30 @@ public class MinesweeperButtonHandler extends MouseAdapter {
     }
     @Override
     public void mousePressed(MouseEvent me) {
-        MinesweeperButton button = (MinesweeperButton) (me.getSource());
+        MinesweeperButton button = (MinesweeperButton) (me.getComponent());
 
         if (SwingUtilities.isLeftMouseButton(me)) {
             isLeftPressed = true;
         }
         if (SwingUtilities.isRightMouseButton(me)) {
             isRightPressed = true;
+            if (!isLeftPressed && !button.isExposed()) { 
+                button.flag();
+                if (button.isFlagged()) {
+                    ms.tilesFlagged++;
+                    button.setIcon(ms.FLAGIMG);
+                } else {
+                    ms.tilesFlagged--;
+                    button.setIcon(ms.TILEIMG);
+                }
+                ms.minesLabel.setText(Integer.toString(ms.NUM_MINES - ms.tilesFlagged));
+             }
         }
         
-        if (SwingUtilities.isLeftMouseButton(me) && SwingUtilities.isRightMouseButton(me)) {
+        if (SwingUtilities.isMiddleMouseButton(me)) {
+            
+        }
+        if (isLeftPressed && isRightPressed) {
             ms.highlightNear(button.getCoordinates());
         }
         
