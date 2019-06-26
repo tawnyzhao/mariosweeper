@@ -2,3 +2,5 @@
 /Mariosweeper/build/
 /Mariosweeper/dist/
 Mariosweeper/highscores.txt
+/mariosweeper/target/
+/target/
