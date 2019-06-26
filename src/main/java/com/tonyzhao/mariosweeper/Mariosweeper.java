@@ -709,6 +709,7 @@ public class Mariosweeper {
         initializeSounds();
         initializeFrame();
         cursor = Toolkit.getDefaultToolkit().createCustomCursor(CURSORIMG.getImage(), new Point(0, 0), "Cursor");
+        frame.setCursor(cursor);
         currentSound = sounds[0];
         sounds[0].playMusic();
     }
