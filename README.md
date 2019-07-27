@@ -6,6 +6,8 @@ Mario-themed minesweeper clone, written in Java using Swing and AWT.
 
 ## About
 This was written for a high school programming course, Programming 12. This was created to mimick the original WINMINE that was released with the Windows Entertainment Pack.  
+  
+  
 ![preview](screenshot.png)
 
 ## Features
