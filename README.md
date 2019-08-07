@@ -4,8 +4,8 @@ Mario-themed minesweeper clone, written in Java using Swing and AWT.
 ![](https://img.shields.io/github/last-commit/tawnyzhao/mariosweeper.svg)
 
 
-## About
-This was written for a high school programming course, Programming 12. This was created to mimick the original WINMINE that was released with the Windows Entertainment Pack.  
+## Overview
+This was written for a high school programming course, Programming 12. This was created to mimick the original WINMINE that was released with the Windows Entertainment Pack. There will be no further updates for features, but feel free to open issues on bugs. 
   
   
 ![preview](screenshot.png)
